@@ -1,186 +1,64 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <title>แจ้งปัญหา</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            mitr: ['"Mitr"', 'sans-serif']
-          }
-        }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ระบบช่วยเหลือ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: 'Mitr', sans-serif;
       }
-    };
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Mitr&display=swap" rel="stylesheet">
-</head>
-<body class="font-mitr bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen flex justify-center items-center px-4">
-
-  <div class="w-full max-w-xl">
-    <!-- ปุ่มสลับโหมด -->
-    <div class="flex justify-end mb-3">
-      <button onclick="toggleDarkMode()" class="flex items-center gap-2 px-3 py-1 text-sm rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-        🌗 <span>สลับโหมด</span>
-      </button>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
-      <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-center">📮 แจ้งปัญหา / ขอความช่วยเหลือ</h2>
-
-      <form id="helpForm" class="space-y-4">
-        <div>
-          <label class="block mb-1">ชื่อ</label>
-          <input type="text" name="name" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center px-4">
+    <div class="max-w-xl w-full bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
+      <h2 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">ระบบขอความช่วยเหลือ</h2>
+      <form id="helpForm">
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-200 mb-1">ชื่อ-นามสกุล</label>
+          <input name="name" type="text" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
         </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block mb-1">อีเมล</label>
-            <input type="email" name="email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-          </div>
-          <div>
-            <label class="block mb-1">รุ่น</label>
-            <input type="text" name="generation" placeholder="เช่น 2564" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-          </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-200 mb-1">อีเมล</label>
+          <input name="email" type="email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
         </div>
-
-        <div>
-          <label class="block mb-1">ประเภทปัญหา</label>
-          <select name="category" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-            <option value="ทั่วไป">ทั่วไป</option>
-            <option value="ระบบไม่ทำงาน">ระบบไม่ทำงาน</option>
-            <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
-          </select>
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-200 mb-1">เรื่องที่ขอความช่วยเหลือ</label>
+          <input name="subject" type="text" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
         </div>
-
-        <div>
-          <label class="block mb-1">รายละเอียด</label>
-          <textarea name="message" rows="4" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"></textarea>
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-200 mb-1">รายละเอียด</label>
+          <textarea name="details" rows="4" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white"></textarea>
         </div>
-
-        <div>
-          <label class="block mb-1">แนบรูปภาพ</label>
-          <input type="file" id="imageFile" accept="image/*" required class="w-full text-sm mb-2">
-          <img id="previewImage" class="w-full max-h-60 rounded-lg object-cover hidden" alt="preview" />
+        <div class="mb-4">
+          <label class="block text-gray-700 dark:text-gray-200 mb-1">แนบภาพ (ถ้ามี)</label>
+          <input name="images" type="file" accept="image/*" multiple class="w-full text-gray-800 dark:text-white" />
         </div>
-
-        <div class="text-center pt-2">
-          <button type="submit" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-xl font-semibold text-lg">📤 ส่ง</button>
-        </div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition">
+          ส่งคำขอ
+        </button>
+        <p id="responseMsg" class="mt-4 text-center text-green-500 hidden">ส่งข้อมูลเรียบร้อยแล้ว!</p>
       </form>
     </div>
-  </div>
 
-  <!-- Popup -->
-  <div id="popup" class="fixed inset-0 bg-black bg-opacity-40 hidden justify-center items-center z-50 transition-all duration-300">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-[90%] max-w-md text-center relative animate-popup">
-      <div id="popupIconWrapper" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
-        <span id="popupIcon" class="text-3xl">✅</span>
-      </div>
-      <p id="popupMessage" class="text-lg font-semibold text-gray-800 dark:text-white mb-4">ข้อความแจ้ง</p>
-      <button onclick="closePopup()" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-2xl leading-none">&times;</button>
-      <button onclick="closePopup()" class="mt-3 px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm shadow-md">ปิด</button>
-    </div>
-  </div>
+    <script>
+      const scriptURL = 'https://script.google.com/macros/s/ID-ของคุณ/exec';
+      const form = document.getElementById('helpForm');
+      const responseMsg = document.getElementById('responseMsg');
 
-  <style>
-    @keyframes popup {
-      0% { transform: scale(0.8); opacity: 0 }
-      100% { transform: scale(1); opacity: 1 }
-    }
-    .animate-popup {
-      animation: popup 0.2s ease-out;
-    }
-  </style>
-
-  <script>
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-    }
-
-    function showPopup(message, isSuccess = true) {
-      const icon = document.getElementById('popupIcon');
-      const wrapper = document.getElementById('popupIconWrapper');
-      const msg = document.getElementById('popupMessage');
-      const popup = document.getElementById('popup');
-
-      icon.innerText = isSuccess ? '✅' : '❌';
-      wrapper.className = isSuccess
-        ? 'w-16 h-16 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4'
-        : 'w-16 h-16 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4';
-
-      msg.innerText = message;
-      popup.classList.remove('hidden');
-    }
-
-    function closePopup() {
-      document.getElementById('popup').classList.add('hidden');
-    }
-
-    const previewImage = document.getElementById('previewImage');
-    document.getElementById('imageFile').addEventListener('change', function () {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          previewImage.src = e.target.result;
-          previewImage.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    const form = document.getElementById("helpForm");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const fileInput = document.getElementById("imageFile");
-      const file = fileInput.files[0];
-      if (!file) return showPopup("กรุณาแนบรูปภาพ", false);
-
-      const reader = new FileReader();
-      reader.onloadend = async function () {
-        const base64 = reader.result.split(',')[1];
+      form.addEventListener('submit', e => {
+        e.preventDefault();
         const formData = new FormData(form);
-
-        const data = {
-          name: formData.get("name"),
-          email: formData.get("email"),
-          generation: formData.get("generation"),
-          category: formData.get("category"),
-          message: formData.get("message"),
-          file: base64,
-          filename: file.name,
-          mimeType: file.type
-        };
-
-        try {
-          const res = await fetch("https://script.google.com/macros/s/AKfycbwVGkHhjGoSzoaBlCK7qLwR9-1BKyrkklOiqFg5ODotpOIIbVlyyXoi__GlCgV0m0BaUQ/exec", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: { "Content-Type": "application/json" }
-          });
-
-          const text = await res.text();
-          showPopup(text === "success" ? "✅ ส่งข้อมูลเรียบร้อยแล้ว!" : "❌ เกิดข้อผิดพลาด: " + text, text === "success");
-          if (text === "success") {
+        fetch(scriptURL, { method: 'POST', body: formData })
+          .then(() => {
+            responseMsg.classList.remove('hidden');
             form.reset();
-            previewImage.classList.add("hidden");
-          }
-        } catch (err) {
-          showPopup("🚫 ไม่สามารถส่งข้อมูลได้: " + err.message, false);
-        }
-      };
-
-      reader.readAsDataURL(file);
-    });
-  </script>
-</body>
+          })
+          .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล'));
+      });
+    </script>
+  </body>
 </html>
+
