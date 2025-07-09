@@ -1,48 +1,71 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ระบบขอความช่วยเหลือ</title>
+  <meta charset="UTF-8">
+  <title>ติดต่อผู้ดูแลระบบ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Font Awesome (for Facebook icon) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Tailwind (optional) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Mitr&display=swap" rel="stylesheet" />
+
+  <!-- Google Fonts: Mitr -->
+  <link href="https://fonts.googleapis.com/css2?family=Mitr&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: 'Mitr', sans-serif; }
+    body {
+      font-family: 'Mitr', sans-serif;
+    }
+
+    /* Apply Mitr font to SweetAlert2 modal content */
+    .swal2-popup {
+      font-family: 'Mitr', sans-serif;
+    }
   </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center px-4">
-  <div class="max-w-xl w-full bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg">
-    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">ระบบขอความช่วยเหลือ</h2>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLSe7TEdzF0Xwz4vKMznRG02Ap79TX11z2NTp8c-OmWAKrrEdtQ/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
-      <div class="grid gap-4">
-        <input name="entry.494973412" type="text" placeholder="ชื่อ-นามสกุล" required
-          class="p-3 rounded border dark:bg-gray-700 dark:text-white" />
-        <input name="entry.564078260" type="tel" placeholder="เบอร์โทร" required
-          class="p-3 rounded border dark:bg-gray-700 dark:text-white" />
-        <input name="entry.2114457992" type="number" placeholder="รุ่น" required
-          class="p-3 rounded border dark:bg-gray-700 dark:text-white" />
-        <select name="entry.1203042906" required class="p-3 rounded border dark:bg-gray-700 dark:text-white">
-          <option value="">-- เลือกแผนก --</option>
-          <option>คอมพิวเตอร์ธุรกิจ</option>
-          <option>ไฟฟ้า</option>
-          <option>ช่างยนต์</option>
-          <option>บัญชี</option>
-          <option>อื่นๆ</option>
-        </select>
-        <input name="entry.558385886" type="text" placeholder="หัวข้อที่ขอความช่วยเหลือ" required
-          class="p-3 rounded border dark:bg-gray-700 dark:text-white" />
-        <textarea name="entry.363873328" rows="4" placeholder="รายละเอียดเพิ่มเติม" required
-          class="p-3 rounded border dark:bg-gray-700 dark:text-white"></textarea>
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold">
-          ส่งคำขอ
-        </button>
-      </div>
-    </form>
+<script>
+  window.onload = function () {
+    Swal.fire({
+      title: 'ติดต่อผู้ดูแลระบบแต่ละรุ่น',
+      html: `
+        <div class="text-left leading-relaxed text-base space-y-2">
+          <strong>รุ่น 52</strong><br>
+          <a href="https://www.facebook.com/kasam.rittiwong" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>ตฤณ (รองวิชาการ)
+          </a><br>
+          <a href="https://www.facebook.com/tornado.vibes" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>ไต้ฝุ่น (โสตฯ)
+          </a><br><br>
 
-    <iframe name="hidden_iframe" style="display:none;" onload="if(submitted){alert('ส่งข้อมูลเรียบร้อยแล้ว!');}"></iframe>
-  </div>
+          <strong>รุ่น 51</strong><br>
+          <a href="https://www.facebook.com/tewan.sungkamanee.7" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>เจมส์ (โสตฯ)
+          </a><br>
+          <a href="https://www.facebook.com/panita.budpimay" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>มิ้นท์ (วิชาการ)
+          </a><br><br>
 
-  <script>let submitted = false;</script>
+          <strong>รุ่นอื่น ๆ</strong><br>
+          <a href="https://www.facebook.com/filmnaphatphong/" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>ฟิล์ม (รองวิชาการ รุ่น 50)
+          </a>
+        </div>
+      `,
+      icon: 'info',
+      confirmButtonText: 'ปิด',
+      width: 380
+}).then(() => {
+  window.close(); // ⛔ ปิดแท็บนี้
+});
+  };
+</script>
+
 </body>
 </html>
