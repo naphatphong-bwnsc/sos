@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ฟอร์มแจ้งปัญหา</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Font: Mitr -->
+  <link href="https://fonts.googleapis.com/css2?family=Mitr&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Mitr', sans-serif;
+    }
+  </style>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-xl">
+    <div class="flex justify-center mb-4">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Information_icon4.svg/120px-Information_icon4.svg.png" alt="logo" class="w-16 h-16">
+    </div>
+
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-700">ฟอร์มแจ้งปัญหา</h2>
+
+    <form id="problemForm" class="space-y-4">
+      <input type="text" name="fullname" placeholder="ชื่อนามสกุล" required class="w-full p-3 border rounded-md" />
+      <input type="text" name="nickname" placeholder="ชื่อเล่น" required class="w-full p-3 border rounded-md" />
+
+      <select name="department" required class="w-full p-3 border rounded-md">
+        <option value="" disabled selected>เลือกฝ่าย</option>
+        <option>ประชาสัมพันธ์</option>
+        <option>ลงทะเบียน</option>
+        <option>สถานที่</option>
+        <option>พยาบาล</option>
+        <option>กิจกรรม</option>
+        <option>อื่นๆ</option>
+      </select>
+
+      <input type="number" name="generation" placeholder="รุ่น (ตัวเลข)" required class="w-full p-3 border rounded-md" />
+      <input type="text" name="studentId" placeholder="รหัสนักเรียน (5 หลัก)" maxlength="5" pattern="\d{5}" required class="w-full p-3 border rounded-md" />
+      <input type="tel" name="phone" placeholder="เบอร์โทรศัพท์ (10 หลัก)" pattern="0[0-9]{9}" required class="w-full p-3 border rounded-md" />
+      <input type="email" name="email" placeholder="อีเมล" required class="w-full p-3 border rounded-md" />
+      <textarea name="problem" placeholder="รายละเอียดปัญหา" rows="4" required class="w-full p-3 border rounded-md"></textarea>
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition">
+        ส่งข้อมูล
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("problemForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = this;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      if (!/^\d{5}$/.test(data.studentId)) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'รูปแบบรหัสผิด',
+          text: 'กรุณากรอกรหัสนักเรียนให้ครบ 5 หลัก',
+        });
+        return;
+      }
+
+      if (!/^0\d{9}$/.test(data.phone)) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'เบอร์โทรไม่ถูกต้อง',
+          text: 'กรุณากรอกเบอร์โทร 10 หลักขึ้นต้นด้วย 0',
+        });
+        return;
+      }
+
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbzU2c7pMFMgRGfwxPSqYEYHaieKN7tNQ8Hoa1DihNGpD4S5ixJpnpDi8ZfUxSie8vk31A/exec", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) throw new Error("Error");
+
+        Swal.fire({
+          icon: 'success',
+          title: 'ส่งข้อมูลสำเร็จ',
+          text: 'ขอบคุณสำหรับการแจ้งปัญหา',
+        });
+        form.reset();
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่ภายหลัง',
+        });
+      }
+    });
+  </script>
+</body>
+</html>
