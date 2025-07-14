@@ -28,9 +28,9 @@ module.exports = async (req, res) => {
   });
 
   const mailOptions = {
-    from: `"แจ้งปัญหา BWN" <${process.env.MAIL_USER}>`,
+    from: `"แจ้งปัญหา @BWNSC" <${process.env.MAIL_USER}>`,
     to: 'sos@bwnsc.in.th',
-    subject: `📨 แจ้งปัญหา: ${topic} โดย ${fullname}`,
+    subject: `${topic} โดย ${fullname}`,
     text: `
 📌 หัวข้อ: ${topic}
 
