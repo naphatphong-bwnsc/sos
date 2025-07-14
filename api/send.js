@@ -1,4 +1,7 @@
 const nodemailer = require('nodemailer');
+console.log('MAIL_USER:', process.env.MAIL_USER);
+console.log('MAIL_PASS:', process.env.MAIL_PASS ? '✅ SET' : '❌ MISSING');
+
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
