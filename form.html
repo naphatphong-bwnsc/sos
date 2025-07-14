@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบแจ้งปัญหา</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Optional: Custom styles if needed, though Tailwind covers most */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">ฟอร์มแจ้งปัญหา</h2>
+        <form id="issueForm" class="space-y-4">
+            <div>
+                <label for="fullname" class="block text-sm font-medium text-gray-700">1. ชื่อนามสกุล</label>
+                <input type="text" id="fullname" name="fullname" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="nickname" class="block text-sm font-medium text-gray-700">2. ชื่อเล่น</label>
+                <input type="text" id="nickname" name="nickname" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="department" class="block text-sm font-medium text-gray-700">3. ฝ่าย</label>
+                <select id="department" name="department" required
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="">-- เลือกฝ่าย --</option>
+                    <option value="IT Support">IT Support</option>
+                    <option value="HR">HR</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="General Affairs">General Affairs</option>
+                    <option value="Other">อื่นๆ</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="generation" class="block text-sm font-medium text-gray-700">4. รุ่น (พิมพ์ตัวเลข)</label>
+                <input type="number" id="generation" name="generation" required min="1"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="studentId" class="block text-sm font-medium text-gray-700">5. รหัสนักเรียน (5 หลัก)</label>
+                <input type="text" id="studentId" name="studentId" required pattern="\d{5}" maxlength="5"
+                       title="กรุณากรอกรหัสนักเรียน 5 หลักที่เป็นตัวเลขเท่านั้น"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">6. หมายเลขโทรศัพท์ติดต่อ</label>
+                <input type="tel" id="phone" name="phone" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">7. อีเมล</label>
+                <input type="email" id="email" name="email" required
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+
+            <div>
+                <label for="problem" class="block text-sm font-medium text-gray-700">8. รายละเอียดปัญหา</label>
+                <textarea id="problem" name="problem" rows="4" required
+                          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+            </div>
+
+            <div>
+                <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    ส่งข้อมูล
+                </button>
+            </div>
+            <div id="responseMessage" class="text-center mt-4 text-sm font-medium"></div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('issueForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // *** สำคัญมาก: เปลี่ยน YOUR_WEB_APP_URL_HERE ด้วย URL ที่คุณได้จากการ Deploy Google Apps Script ***
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxe5nX19YLDnMb_ruvJ21U3Fe5UkU2947W05qGXmyQ_7979LO8LLw9N-Hzz7njTXboIoA/exec'; 
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // ป้องกันการโหลดหน้าใหม่เมื่อกด submit
+
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            responseMessage.textContent = 'กำลังส่งข้อมูล...';
+            responseMessage.className = 'text-center mt-4 text-sm font-medium text-gray-600';
+
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors', // สำคัญสำหรับ CORS
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    responseMessage.textContent = 'ส่งข้อมูลสำเร็จ! ขอบคุณครับ/ค่ะ';
+                    responseMessage.className = 'text-center mt-4 text-sm font-medium text-green-600';
+                    form.reset(); // ล้างข้อมูลในฟอร์มหลังจากส่งสำเร็จ
+                } else {
+                    responseMessage.textContent = 'เกิดข้อผิดพลาดในการส่งข้อมูล: ' + (result.message || 'ไม่ทราบสาเหตุ');
+                    responseMessage.className = 'text-center mt-4 text-sm font-medium text-red-600';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                responseMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: ' + error.message;
+                responseMessage.className = 'text-center mt-4 text-sm font-medium text-red-600';
+            }
+        });
+    </script>
+</body>
+</html>

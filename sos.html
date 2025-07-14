@@ -1,121 +1,73 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>แจ้งปัญหา</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>ติดต่อผู้ดูแลระบบ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tailwind CSS -->
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Font Awesome (for Facebook icon) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Tailwind (optional) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            mitr: ['"Mitr"', 'sans-serif']
-          }
-        }
-      }
-    };
-  </script>
+
+  <!-- Google Fonts: Mitr -->
   <link href="https://fonts.googleapis.com/css2?family=Mitr&display=swap" rel="stylesheet">
-</head>
-<body class="font-mitr bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen flex justify-center items-center px-4">
-
-  <div class="w-full max-w-xl">
-    <!-- ปุ่มสลับโหมด -->
-    <div class="flex justify-end mb-3">
-      <button onclick="toggleDarkMode()" class="flex items-center gap-2 px-3 py-1 text-sm rounded bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-        🌗 <span>สลับโหมด</span>
-      </button>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
-      <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-center">📮 แจ้งปัญหา / ขอความช่วยเหลือ</h2>
-
-      <form id="helpForm" class="space-y-4">
-        <div>
-          <label class="block mb-1">ชื่อ</label>
-          <input type="text" name="name" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block mb-1">อีเมล</label>
-            <input type="email" name="email" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-          </div>
-          <div>
-            <label class="block mb-1">รุ่น</label>
-            <input type="text" name="generation" placeholder="เช่น 2564" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-          </div>
-        </div>
-
-        <div>
-          <label class="block mb-1">ประเภทปัญหา</label>
-          <select name="category" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white">
-            <option value="ทั่วไป">ทั่วไป</option>
-            <option value="ระบบไม่ทำงาน">ระบบไม่ทำงาน</option>
-            <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block mb-1">รายละเอียด</label>
-          <textarea name="message" rows="4" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-black dark:text-white"></textarea>
-        </div>
-
-        <div>
-          <label class="block mb-1">แนบรูปภาพ</label>
-          <input type="file" id="imageFile" accept="image/*" required class="w-full text-sm mb-2">
-          <img id="previewImage" class="w-full max-h-60 rounded-lg object-cover hidden" alt="preview" />
-        </div>
-
-        <div class="text-center pt-2">
-          <button type="submit" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-xl font-semibold text-lg">📤 ส่ง</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Popup -->
-  <div id="popup" class="fixed inset-0 bg-black bg-opacity-40 hidden justify-center items-center z-50 transition-all duration-300">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-[90%] max-w-md text-center relative animate-popup">
-      <div id="popupIconWrapper" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
-        <span id="popupIcon" class="text-3xl">✅</span>
-      </div>
-      <p id="popupMessage" class="text-lg font-semibold text-gray-800 dark:text-white mb-4">ข้อความแจ้ง</p>
-      <button onclick="closePopup()" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 text-2xl leading-none">&times;</button>
-      <button onclick="closePopup()" class="mt-3 px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full text-sm shadow-md">ปิด</button>
-    </div>
-  </div>
 
   <style>
-    @keyframes popup {
-      0% { transform: scale(0.8); opacity: 0 }
-      100% { transform: scale(1); opacity: 1 }
+    body {
+      font-family: 'Mitr', sans-serif;
     }
-    .animate-popup {
-      animation: popup 0.2s ease-out;
+
+    /* Apply Mitr font to SweetAlert2 modal content */
+    .swal2-popup {
+      font-family: 'Mitr', sans-serif;
     }
   </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 
-  <script>
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-    }
+<script>
+  window.onload = function () {
+    Swal.fire({
+      title: 'ติดต่อผู้ดูแลระบบแต่ละรุ่น',
+      html: `
+        <div class="text-left leading-relaxed text-base space-y-2">
+          <strong>รุ่น 52</strong><br>
+          <a href="https://www.facebook.com/kasam.rittiwong" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>ตฤณ (รองวิชาการ)
+          </a><br>
+          <a href="https://www.facebook.com/tornado.vibes" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>ไต้ฝุ่น (โสตฯ)
+          </a><br><br>
 
-    function showPopup(message, isSuccess = true) {
-      const icon = document.getElementById('popupIcon');
-      const wrapper = document.getElementById('popupIconWrapper');
-      const msg = document.getElementById('popupMessage');
-      const popup = document.getElementById('popup');
+          <strong>รุ่น 51</strong><br>
+          <a href="https://www.facebook.com/tewan.sungkamanee.7" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>เจมส์ (โสตฯ)
+          </a><br>
+          <a href="https://www.facebook.com/panita.budpimay" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>มิ้นท์ (วิชาการ)
+          </a><br><br>
 
-      icon.innerText = isSuccess ? '✅' : '❌';
-      wrapper.className = isSuccess
-        ? 'w-16 h-16 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4'
-        : 'w-16 h-16 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4';
+          <strong>รุ่นอื่น ๆ</strong><br>
+          <a href="https://www.facebook.com/filmnaphatphong/" target="_blank">
+            <i class="fab fa-facebook text-blue-600 mr-1"></i>ฟิล์ม (รองวิชาการ รุ่น 50)
+          </a>
+        </div>
+      `,
+      icon: 'info',
+      confirmButtonText: 'ปิด',
+      width: 380
+}).then(() => {
+  window.close(); // ⛔ ปิดแท็บนี้
+});
+  };
+</script>
 
+<<<<<<< HEAD
       msg.innerText = message;
       popup.classList.remove('hidden');
     }
@@ -182,5 +134,7 @@
       reader.readAsDataURL(file);
     });
   </script>
+=======
+>>>>>>> c222ff622c495664a87b528725b6d41e181cb672
 </body>
 </html>
