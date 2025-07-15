@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ฟอร์มแจ้งปัญหา | BWN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style> body { font-family: 'Mitr', sans-serif; } </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-xl">
+    <h2 class="text-2xl font-semibold text-center text-blue-800 mb-6">ฟอร์มแจ้งปัญหา</h2>
+    <form id="report-form" class="space-y-4">
+      <div><label class="block font-medium">ชื่อ-สกุล</label><input type="text" name="fullname" required class="w-full p-2 border rounded-md" /></div>
+      <div><label class="block font-medium">ชื่อเล่น</label><input type="text" name="nickname" required class="w-full p-2 border rounded-md" /></div>
+      <div><label class="block font-medium">ฝ่าย</label><select name="department" required class="w-full p-2 border rounded-md">
+        <option value="">-- เลือกฝ่าย --</option><option value="วิชาการ">วิชาการ</option>
+        <option value="สรุป">สรุป</option><option value="บริหาร">บริหาร</option></select></div>
+      <div><label class="block font-medium">รุ่น</label><input type="number" name="generation" required class="w-full p-2 border rounded-md" /></div>
+      <div><label class="block font-medium">รหัสนักเรียน (5 หลัก)</label><input type="text" name="studentId" required pattern="^[0-9]{5}$" maxlength="5" inputmode="numeric" oninvalid="this.setCustomValidity('กรุณากรอกตัวเลข 5 หลักเท่านั้น')" oninput="this.setCustomValidity('')" class="w-full p-2 border rounded-md" /></div>
+      <div><label class="block font-medium">ช่องทางการติดต่อ</label><input type="text" name="contact" required class="w-full p-2 border rounded-md" /></div>
+      <div><label class="block font-medium">หัวข้อปัญหา</label><select name="topic" required class="w-full p-2 border rounded-md">
+        <option value="">-- เลือกหัวข้อ --</option><option>ขอใช้งานแอป</option>
+        <option>ลืมรหัสผ่าน</option><option>เข้า Canva ไม่ได้</option><option>อื่นๆ</option></select></div>
+      <div><label class="block font-medium">รายละเอียด</label><textarea name="problem" rows="4" required class="w-full p-2 border rounded-md"></textarea></div>
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">ส่งข้อมูล</button>
+    </form>
+    <p id="status" class="mt-4 text-center font-semibold text-green-600"></p>
+  </div>
+  <script>
+    const form = document.getElementById('report-form');
+    const status = document.getElementById('status');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.innerText = '';
+      const data = Object.fromEntries(new FormData(form).entries());
+      try {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const result = await res.json();
+        status.innerText = result.message;
+        if (res.ok) form.reset();
+        else status.classList.add('text-red-600');
+      } catch (err) {
+        status.innerText = 'เกิดข้อผิดพลาดขณะส่งข้อมูล';
+        status.classList.add('text-red-600');
+      }
+    });
+  </script>
+</body>
+</html>
