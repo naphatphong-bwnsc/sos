@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แจ้งปัญหาการใช้งานระบบ @BWNSC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-indigo-50 to-white min-h-screen p-6">
+  <div class="max-w-xl mx-auto bg-white shadow-xl rounded-2xl p-6 border border-indigo-100">
+    <div class="flex justify-center mb-4">
+      <img src="https://data.bwnsc.in.th/sc.png" alt="โลโก้โรงเรียน" class="h-16">
+    </div>
+    <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">📣 แจ้งปัญหาการใช้งานระบบ @BWNSC</h2>
+
+    <form id="issueForm" class="space-y-4">
+      <div>
+        <label class="block font-semibold text-indigo-700">ชื่อ-สกุล</label>
+        <input type="text" name="fullname" required class="w-full p-3 border rounded-xl shadow-sm" />
+      </div>
+
+      <div>
+        <label class="block font-semibold text-indigo-700">ชื่อเล่น</label>
+        <input type="text" name="nickname" required class="w-full p-3 border rounded-xl shadow-sm" />
+      </div>
+
+      <div>
+        <label class="block font-semibold text-indigo-700">ฝ่าย</label>
+        <select name="department" required class="w-full p-3 border rounded-xl shadow-sm">
+          <option value="" disabled selected>-- เลือกฝ่าย --</option>
+          <option value="ฝ่ายนโยบายและแผนงานวิชาการ">ฝ่ายนโยบายและแผนงานวิชาการ</option>
+          <option value="ฝ่ายสรุปและประเมินผล">ฝ่ายสรุปและประเมินผล</option>
+          <option value="ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร">ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร</option>
+          <option value="ฝ่ายปฏิคมและสวัสดิการ">ฝ่ายปฏิคมและสวัสดิการ</option>
+          <option value="ฝ่ายอาคารสถานที่และสิ่งแวดล้อม">ฝ่ายอาคารสถานที่และสิ่งแวดล้อม</option>
+          <option value="ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์">ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์</option>
+          <option value="ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์">ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์</option>
+          <option value="ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม">ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม</option>
+          <option value="ฝ่ายส่งเสริมกิจกรรมและนันทนาการ">ฝ่ายส่งเสริมกิจกรรมและนันทนาการ</option>
+          <option value="บริหาร">บริหาร</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold text-indigo-700">รุ่น</label>
+          <input type="text" name="generation" required class="w-full p-3 border rounded-xl shadow-sm" />
+        </div>
+        <div>
+          <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
+          <input type="text" name="studentId" required class="w-full p-3 border rounded-xl shadow-sm" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-indigo-700 mb-1">ช่องทางการติดต่อ</label>
+        <div class="flex gap-3 text-gray-600">
+          <button type="button" data-type="เฟซบุ๊ก" class="contact-btn p-2 rounded-full hover:bg-blue-100" title="Facebook">
+            <i data-feather="facebook"></i>
+          </button>
+          <button type="button" data-type="ไลน์" class="contact-btn p-2 rounded-full hover:bg-green-100" title="LINE">
+            <i data-feather="message-circle"></i>
+          </button>
+          <button type="button" data-type="ไอจี" class="contact-btn p-2 rounded-full hover:bg-pink-100" title="Instagram">
+            <i data-feather="instagram"></i>
+          </button>
+          <button type="button" data-type="เบอร์โทร" class="contact-btn p-2 rounded-full hover:bg-yellow-100" title="Phone">
+            <i data-feather="phone"></i>
+          </button>
+        </div>
+        <input type="text" id="contactValue" name="contact" required placeholder="กรอกช่องทางที่เลือก"
+               class="w-full p-3 border rounded-xl shadow-sm mt-3 hidden" />
+      </div>
+
+      <div>
+        <label class="block font-semibold text-indigo-700">หัวข้อปัญหา</label>
+        <select name="topic" required class="w-full p-3 border rounded-xl shadow-sm">
+          <option value="">-- เลือกหัวข้อ --</option>
+          <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
+          <option value="ขออนุมัติการเข้าถึงแอป">ขออนุมัติการเข้าถึงแอป</option>
+          <option value="ลืมรหัสผ่าน">ลืมรหัสผ่าน</option>
+          <option value="ใช้งาน Canva Pro ไม่ได้">ใช้งาน Canva Pro ไม่ได้</option>
+          <option value="อื่น ๆ">อื่น ๆ (โปรดระบุในช่องรายละเอียด)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-semibold text-indigo-700">รายละเอียด</label>
+        <textarea name="details" rows="4" required class="w-full p-3 border rounded-xl shadow-sm"></textarea>
+      </div>
+
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold">
+        ส่งข้อมูล
+      </button>
+    </form>
+  </div>
+
+  <script>
+    feather.replace();
+
+    const form = document.getElementById("issueForm");
+    const contactBtns = document.querySelectorAll(".contact-btn");
+    const contactInput = document.getElementById("contactValue");
+    let selectedType = "";
+
+    contactBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedType = btn.dataset.type;
+        contactInput.style.display = "block";
+        contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
+        contactInput.focus();
+      });
+    });
+
+    const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQAF5fvtiU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YUcLjm3AHIXiIi663L-hRF43OLvuCQuxla_bTzmg6bk"; // เปลี่ยนเป็น Webhook จริง
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      Swal.fire({
+        title: 'กำลังส่งข้อมูล...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      const formData = new FormData(form);
+      formData.set("contact", `${selectedType}: ${contactInput.value}`);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      const message = {
+        text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🆘กรุณาตอบกลับด้วยข้อความ เสร็จสิ้น`
+      };
+
+      try {
+        const res = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(message),
+        });
+
+        if (res.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'ส่งข้อมูลเรียบร้อยแล้ว',
+            confirmButtonText: 'ตกลง'
+          });
+          form.reset();
+          contactInput.style.display = "none";
+        } else {
+          throw new Error();
+        }
+      } catch {
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาดในการส่ง',
+          text: 'โปรดลองใหม่อีกครั้ง',
+        });
+      }
+    });
+  </script>
+</body>
+</html>
