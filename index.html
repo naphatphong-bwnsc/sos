@@ -10,6 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Prompt', sans-serif; }
+    .contact-btn.active {
+      background-color: #6366f1 !important;
+      color: white;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-b from-indigo-50 to-white min-h-screen p-6">
@@ -112,16 +116,29 @@
     contactBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         selectedType = btn.dataset.type;
+        contactBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
         contactInput.style.display = "block";
         contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
         contactInput.focus();
       });
     });
 
-    const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQAF5fvtiU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YUcLjm3AHIXiIi663L-hRF43OLvuCQuxla_bTzmg6bk"; // เปลี่ยนเป็น Webhook จริง
+    const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQAF5fvtiU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YUcLjm3AHIXiIi663L-hRF43OLvuCQuxla_bTzmg6bk";
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      if (!form.checkValidity() || !selectedType || !contactInput.value.trim()) {
+        form.reportValidity();
+        if (!selectedType || !contactInput.value.trim()) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ',
+          });
+        }
+        return;
+      }
 
       Swal.fire({
         title: 'กำลังส่งข้อมูล...',
@@ -153,6 +170,7 @@
           });
           form.reset();
           contactInput.style.display = "none";
+          contactBtns.forEach(b => b.classList.remove("active"));
         } else {
           throw new Error();
         }
