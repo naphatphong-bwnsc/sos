@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประเมินความพึงพอใจ - @BWNSC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; }
+        .star-rating { display: flex; gap: 4px; justify-content: center; }
+        .star { 
+            font-size: 2rem; 
+            color: #d1d5db; 
+            cursor: pointer; 
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .star:hover { 
+            color: #10b981; 
+            transform: scale(1.1); 
+        }
+        .star.active { 
+            color: #10b981 !important; 
+            transform: scale(1.05); 
+        }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen py-4 px-4">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <div class="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center card-shadow">
+                <span class="text-3xl font-bold text-purple-600">@</span>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">ระบบประเมินความพึงพอใจ</h1>
+            <p class="text-purple-100 text-sm">การแก้ไขปัญหาการใช้งานระบบ @BWNSC</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl p-6 card-shadow">
+            <form id="satisfactionForm">
+                <!-- ข้อมูลผู้ประเมิน -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">ข้อมูลผู้ประเมิน</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ-นามสกุล</label>
+                            <input type="text" id="fullName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="กรุณากรอกชื่อ-นามสกุล" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">ฝ่าย</label>
+                            <select id="department" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                                <option value="">-- เลือกฝ่าย --</option>
+                                <option value="ฝ่ายนโยบายและแผนงานวิชาการ">ฝ่ายนโยบายและแผนงานวิชาการ</option>
+                                <option value="ฝ่ายสรุปและประเมินผล">ฝ่ายสรุปและประเมินผล</option>
+                                <option value="ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร">ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร</option>
+                                <option value="ฝ่ายปฏิคมและสวัสดิการ">ฝ่ายปฏิคมและสวัสดิการ</option>
+                                <option value="ฝ่ายอาคารสถานที่และสิ่งแวดล้อม">ฝ่ายอาคารสถานที่และสิ่งแวดล้อม</option>
+                                <option value="ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์">ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์</option>
+                                <option value="ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์">ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์</option>
+                                <option value="ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม">ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม</option>
+                                <option value="ฝ่ายส่งเสริมกิจกรรมและนันทนาการ">ฝ่ายส่งเสริมกิจกรรมและนันทนาการ</option>
+                                <option value="บริหาร">บริหาร</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ประเภทปัญหา -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">ประเภทปัญหาที่ได้รับการแก้ไข</label>
+                    <select id="problemType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                        <option value="">-- เลือกหัวข้อ --</option>
+                        <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
+                        <option value="ขออนุมัติการเข้าถึงแอป">ขออนุมัติการเข้าถึงแอป</option>
+                        <option value="ลืมรหัสผ่าน">ลืมรหัสผ่าน</option>
+                        <option value="ใช้งาน Canva Pro ไม่ได้">ใช้งาน Canva Pro ไม่ได้</option>
+                        <option value="อื่น ๆ">อื่น ๆ (โปรดระบุในช่องรายละเอียด)</option>
+                    </select>
+                </div>
+
+                <!-- คะแนนความพึงพอใจ -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">ระดับความพึงพอใจ</h3>
+                    
+                    <!-- ความรวดเร็วในการแก้ไข -->
+                    <div class="mb-5">
+                        <p class="text-sm font-medium text-gray-700 mb-3 text-center">ความรวดเร็วในการแก้ไขปัญหา</p>
+                        <div class="star-rating" data-rating="speed">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="speedRating" name="speedRating" required>
+                    </div>
+
+                    <!-- คุณภาพการแก้ไข -->
+                    <div class="mb-5">
+                        <p class="text-sm font-medium text-gray-700 mb-3 text-center">คุณภาพการแก้ไขปัญหา</p>
+                        <div class="star-rating" data-rating="quality">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="qualityRating" name="qualityRating" required>
+                    </div>
+
+                    <!-- การสื่อสาร -->
+                    <div class="mb-5">
+                        <p class="text-sm font-medium text-gray-700 mb-3 text-center">การสื่อสารและการให้บริการ</p>
+                        <div class="star-rating" data-rating="communication">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="communicationRating" name="communicationRating" required>
+                    </div>
+
+                    <!-- ความเข้าใจปัญหา -->
+                    <div class="mb-5">
+                        <p class="text-sm font-medium text-gray-700 mb-3 text-center">ความเข้าใจปัญหาและการวิเคราะห์</p>
+                        <div class="star-rating" data-rating="understanding">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="understandingRating" name="understandingRating" required>
+                    </div>
+
+                    <!-- ความพึงพอใจโดยรวม -->
+                    <div class="mb-5">
+                        <p class="text-sm font-medium text-gray-700 mb-3 text-center">ความพึงพอใจโดยรวม</p>
+                        <div class="star-rating" data-rating="overall">
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="overallRating" name="overallRating" required>
+                    </div>
+                </div>
+
+                <!-- ความคิดเห็นเพิ่มเติม -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">ความคิดเห็นและข้อเสนอแนะเพิ่มเติม</label>
+                    <textarea id="comments" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none" placeholder="กรุณาแสดงความคิดเห็นหรือข้อเสนอแนะ (ไม่บังคับ)"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-4 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 card-shadow">
+                    <span class="flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                        ส่งแบบประเมิน
+                    </span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden mt-6 bg-green-500 text-white p-4 rounded-lg text-center">
+            <div class="flex items-center justify-center mb-2">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="font-semibold">ส่งแบบประเมินสำเร็จ!</span>
+            </div>
+            <p class="text-sm">ขอบคุณสำหรับการประเมินความพึงพอใจ</p>
+        </div>
+    </div>
+
+    <script>
+        // Star Rating System
+        document.querySelectorAll('.star-rating').forEach(rating => {
+            const stars = rating.querySelectorAll('.star');
+            const ratingType = rating.getAttribute('data-rating');
+            let currentRating = 0;
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const value = parseInt(star.getAttribute('data-value'));
+                    currentRating = value;
+                    
+                    // Clear all stars first
+                    stars.forEach(s => {
+                        s.classList.remove('active');
+                        s.style.color = '#d1d5db';
+                    });
+                    
+                    // Set active stars
+                    for (let i = 0; i < value; i++) {
+                        stars[i].classList.add('active');
+                        stars[i].style.color = '#10b981';
+                    }
+                    
+                    // Update hidden input
+                    document.getElementById(ratingType + 'Rating').value = value;
+                    
+                    console.log(`${ratingType} rating set to: ${value}`);
+                });
+                
+                // Hover effect
+                star.addEventListener('mouseenter', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    stars.forEach((s, i) => {
+                        if (i < value) {
+                            s.style.color = '#10b981';
+                        } else {
+                            s.style.color = '#d1d5db';
+                        }
+                    });
+                });
+            });
+            
+            // Reset on mouse leave to show current rating
+            rating.addEventListener('mouseleave', () => {
+                stars.forEach((s, i) => {
+                    if (i < currentRating) {
+                        s.style.color = '#10b981';
+                        s.classList.add('active');
+                    } else {
+                        s.style.color = '#d1d5db';
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Form Submission
+        document.getElementById('satisfactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate ratings
+            const speedRating = document.getElementById('speedRating').value;
+            const qualityRating = document.getElementById('qualityRating').value;
+            const communicationRating = document.getElementById('communicationRating').value;
+            const understandingRating = document.getElementById('understandingRating').value;
+            const overallRating = document.getElementById('overallRating').value;
+            
+            if (!speedRating || !qualityRating || !communicationRating || !understandingRating || !overallRating) {
+                alert('กรุณาให้คะแนนความพึงพอใจในทุกหัวข้อ');
+                return;
+            }
+            
+            // Collect form data
+            const formData = {
+                timestamp: new Date().toLocaleString('th-TH'),
+                fullName: document.getElementById('fullName').value,
+                department: document.getElementById('department').value,
+                problemType: document.getElementById('problemType').value,
+                speedRating: speedRating,
+                qualityRating: qualityRating,
+                communicationRating: communicationRating,
+                understandingRating: understandingRating,
+                overallRating: overallRating,
+                averageRating: ((parseInt(speedRating) + parseInt(qualityRating) + parseInt(communicationRating) + parseInt(understandingRating) + parseInt(overallRating)) / 5).toFixed(1),
+                comments: document.getElementById('comments').value || 'ไม่มี'
+            };
+            
+            // Send data to Google Sheets
+            const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // Replace with your actual URL
+            
+            // Show loading state
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>กำลังส่งข้อมูล...</span>';
+            submitButton.disabled = true;
+            
+            // Send to Google Sheets
+            fetch(scriptURL, {
+                method: 'POST',
+                body: new FormData(Object.entries(formData).reduce((form, [key, value]) => {
+                    form.append(key, value);
+                    return form;
+                }, new FormData()))
+            })
+            .then(response => {
+                console.log('Success!', response);
+                // Show success message
+                document.querySelector('.max-w-md').style.display = 'none';
+                document.getElementById('successMessage').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                // Show error message
+                alert('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+                
+                // Reset button
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            });
+        });
+
+        // Auto-resize textarea
+        document.getElementById('comments').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9675a02b6689272e',t:'MTc1Mzg4NjU3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
