@@ -1,52 +1,108 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="utf-8">
-    <title>ระบบติดตามสถานะการให้บริการ @BWNSC</title>
-    <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center;}
-        th { background: #B3E5FC;}
-        .online { color: green; font-weight: bold;}
-        .offline { color: red; font-weight: bold;}
-    </style>
+  <meta charset="utf-8">
+  <title>ระบบติดตามสถานะการให้บริการ @BWNSC</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>ระบบติดตามสถานะการให้บริการ @BWNSC</h2>
-    <table id="status-table">
-        <thead>
-            <tr>
-                <th>เว็บไซต์</th>
-                <th>สถานะ</th>
-                <th>เวลาตรวจล่าสุด</th>
-                <th>บริการ/รายละเอียด</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<body class="bg-gray-50 min-h-screen">
 
-<script>
-const sheetUrl = 'https://docs.google.com/spreadsheets/d/1KzADZSfA2ky2tWoR1-EpyEeAVbUMhDHjshgQQyidjEk/gviz/tq?tqx=out:csv&sheet=Sheet1';
-function fetchStatus(){
-    fetch(sheetUrl)
-    .then(res => res.text())
-    .then(csv => {
-        const rows = csv.trim().split('\n').slice(1); //ข้ามหัวตาราง
-        let html = '';
-        rows.forEach(row=>{
-            const [url, status, checked, detail]=row.split(',');
-            html += `<tr>
-                <td><a href="${url}" target="_blank">${url.replace('https://','').replace('/','')}</a></td>
-                <td class="${status.includes('Online') ? 'online':'offline'}">${status}</td>
-                <td>${checked}</td>
-                <td>${detail}</td>
-            </tr>`;
-        });
-        document.querySelector('#status-table tbody').innerHTML = html;
-    });
-}
-// โหลดข้อมูลทันที และรีเฟรชทุก 2 นาที
-fetchStatus(); setInterval(fetchStatus, 120000);
-</script>
+  <div class="max-w-3xl mx-auto py-8 px-2">
+    <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center drop-shadow">
+      ระบบติดตามสถานะการให้บริการ @BWNSC
+    </h2>
+
+    <div class="overflow-x-auto rounded-lg shadow-lg bg-white">
+      <table class="min-w-full divide-y divide-blue-200 text-center">
+        <thead class="bg-blue-100">
+          <tr>
+            <th class="px-4 py-3 text-gray-700 text-sm font-semibold">เว็บไซต์</th>
+            <th class="px-4 py-3 text-gray-700 text-sm font-semibold">สถานะ</th>
+            <th class="px-4 py-3 text-gray-700 text-sm font-semibold">เวลาตรวจล่าสุด</th>
+            <th class="px-4 py-3 text-gray-700 text-sm font-semibold">บริการ/รายละเอียด</th>
+          </tr>
+        </thead>
+        <tbody id="status-table" class="bg-white divide-y divide-gray-200">
+          <tr>
+            <td colspan="4" class="py-8 text-gray-400">กำลังโหลดข้อมูล...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 text-sm text-right text-gray-400">อัปเดตอัตโนมัติทุก 2 นาที</div>
+  </div>
+
+  <script>
+  // ใช้ PapaParse จะรองรับ , ในข้อความ (แต่ถ้าใช้ CDN ไม่ได้ ใส่สูตร parse ละกัน)
+  function parseCSV(text){
+    const lines = text.trim().split("\n");
+    const rows = [];
+    for(let i=0; i<lines.length; i++){
+      // ใช้ split ตามเครื่องหมาย " หากพบ " ให้ถือเป็นกลุ่มเดียวกัน (กรณีใน cell มี ,)
+      let row = [];
+      let current = "", insideQuote = false;
+      for(let char of lines[i]) {
+        if(char === '"') { insideQuote = !insideQuote; }
+        else if(char === ',' && !insideQuote) { row.push(current); current = ""; }
+        else { current += char; }
+      }
+      row.push(current);
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  async function fetchStatus(){
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1KzADZSfA2ky2tWoR1-EpyEeAVbUMhDHjshgQQyidjEk/gviz/tq?tqx=out:csv&sheet=Sheet1';
+    try {
+      const res = await fetch(sheetUrl);
+      const csv = await res.text();
+
+      // ใช้ฟังก์ชัน parseCSV เพื่อรองรับข้อความที่มี , ข้างใน
+      const rows = parseCSV(csv);
+      const header = rows[0];
+      const dataRows = rows.slice(1);
+
+      let html = '';
+      if(dataRows.length === 0){
+        html = `<tr><td colspan="4" class="py-8 text-gray-400">ไม่พบข้อมูล</td></tr>`;
+      } else {
+        for(const row of dataRows){
+          const [url, status, checked, detail] = row;
+          let statusIcon = '', statusClass = '';
+
+          if(status.includes('Online') || status.includes("🟢")) {
+            statusIcon = `<span class="inline-flex items-center text-green-600 font-semibold"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>ปกติ</span>`;
+            statusClass = "bg-green-50";
+          } else {
+            statusIcon = `<span class="inline-flex items-center text-red-600 font-semibold"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>ขัดข้อง</span>`;
+            statusClass = "bg-red-50";
+          }
+
+          html += `
+            <tr class="hover:bg-blue-50 transition">
+              <td class="px-4 py-3 whitespace-nowrap text-blue-700 underline text-sm">
+                <a href="${url}" target="_blank" rel="noopener">${url.replace(/^https?:\/\//,'').replace(/\/$/, '')}</a>
+              </td>
+              <td class="px-4 py-3 ${statusClass} rounded">${statusIcon}</td>
+              <td class="px-4 py-3 text-sm text-gray-500">${checked || '-'}</td>
+              <td class="px-4 py-3 text-left text-gray-700 text-sm">${detail || '-'}</td>
+            </tr>
+          `;
+        }
+      }
+      document.getElementById('status-table').innerHTML = html;
+    } catch (e){
+      document.getElementById('status-table').innerHTML = `<tr><td colspan="4" class="py-8 text-red-400">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>`;
+    }
+  }
+
+  // โหลดทันที + รีเฟรชทุก 2 นาที
+  fetchStatus();
+  setInterval(fetchStatus, 120000);
+  </script>
 </body>
 </html>
