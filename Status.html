@@ -36,15 +36,14 @@
   </div>
 
   <script>
-  // ใช้ PapaParse จะรองรับ , ในข้อความ (แต่ถ้าใช้ CDN ไม่ได้ ใส่สูตร parse ละกัน)
   function parseCSV(text){
     const lines = text.trim().split("\n");
     const rows = [];
     for(let i=0; i<lines.length; i++){
-      // ใช้ split ตามเครื่องหมาย " หากพบ " ให้ถือเป็นกลุ่มเดียวกัน (กรณีใน cell มี ,)
       let row = [];
       let current = "", insideQuote = false;
-      for(let char of lines[i]) {
+      for(let j=0; j<lines[i].length; j++){
+        const char = lines[i][j];
         if(char === '"') { insideQuote = !insideQuote; }
         else if(char === ',' && !insideQuote) { row.push(current); current = ""; }
         else { current += char; }
@@ -56,12 +55,12 @@
   }
 
   async function fetchStatus(){
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/1KzADZSfA2ky2tWoR1-EpyEeAVbUMhDHjshgQQyidjEk/gviz/tq?tqx=out:csv&sheet=Sheet1';
+    // ใช้ลิงก์ CSV จากคุณ
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTrdF8uCStrZI0HpVYezDi78LjUekGVjgso2aSg0aGjVaZR_vzE0L8vWd3nlIcGpK5x_racFTsUqbEJ/pub?output=csv';
     try {
       const res = await fetch(sheetUrl);
       const csv = await res.text();
 
-      // ใช้ฟังก์ชัน parseCSV เพื่อรองรับข้อความที่มี , ข้างใน
       const rows = parseCSV(csv);
       const header = rows[0];
       const dataRows = rows.slice(1);
@@ -71,10 +70,11 @@
         html = `<tr><td colspan="4" class="py-8 text-gray-400">ไม่พบข้อมูล</td></tr>`;
       } else {
         for(const row of dataRows){
+          // รองรับ row ที่บางคนอาจเว้นว่าง
           const [url, status, checked, detail] = row;
           let statusIcon = '', statusClass = '';
 
-          if(status.includes('Online') || status.includes("🟢")) {
+          if((status||"").includes('Online') || (status||"").includes("🟢")) {
             statusIcon = `<span class="inline-flex items-center text-green-600 font-semibold"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>ปกติ</span>`;
             statusClass = "bg-green-50";
           } else {
@@ -85,7 +85,7 @@
           html += `
             <tr class="hover:bg-blue-50 transition">
               <td class="px-4 py-3 whitespace-nowrap text-blue-700 underline text-sm">
-                <a href="${url}" target="_blank" rel="noopener">${url.replace(/^https?:\/\//,'').replace(/\/$/, '')}</a>
+                <a href="${url}" target="_blank" rel="noopener">${(url||"").replace(/^https?:\/\//,'').replace(/\/$/, '')}</a>
               </td>
               <td class="px-4 py-3 ${statusClass} rounded">${statusIcon}</td>
               <td class="px-4 py-3 text-sm text-gray-500">${checked || '-'}</td>
@@ -100,7 +100,6 @@
     }
   }
 
-  // โหลดทันที + รีเฟรชทุก 2 นาที
   fetchStatus();
   setInterval(fetchStatus, 120000);
   </script>
