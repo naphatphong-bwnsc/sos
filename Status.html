@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <title>ระบบติดตามสถานะการให้บริการ @BWNSC</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center;}
+        th { background: #B3E5FC;}
+        .online { color: green; font-weight: bold;}
+        .offline { color: red; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <h2>ระบบติดตามสถานะการให้บริการ @BWNSC</h2>
+    <table id="status-table">
+        <thead>
+            <tr>
+                <th>เว็บไซต์</th>
+                <th>สถานะ</th>
+                <th>เวลาตรวจล่าสุด</th>
+                <th>บริการ/รายละเอียด</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+<script>
+const sheetUrl = 'https://docs.google.com/spreadsheets/d/1KzADZSfA2ky2tWoR1-EpyEeAVbUMhDHjshgQQyidjEk/gviz/tq?tqx=out:csv&sheet=Sheet1';
+function fetchStatus(){
+    fetch(sheetUrl)
+    .then(res => res.text())
+    .then(csv => {
+        const rows = csv.trim().split('\n').slice(1); //ข้ามหัวตาราง
+        let html = '';
+        rows.forEach(row=>{
+            const [url, status, checked, detail]=row.split(',');
+            html += `<tr>
+                <td><a href="${url}" target="_blank">${url.replace('https://','').replace('/','')}</a></td>
+                <td class="${status.includes('Online') ? 'online':'offline'}">${status}</td>
+                <td>${checked}</td>
+                <td>${detail}</td>
+            </tr>`;
+        });
+        document.querySelector('#status-table tbody').innerHTML = html;
+    });
+}
+// โหลดข้อมูลทันที และรีเฟรชทุก 2 นาที
+fetchStatus(); setInterval(fetchStatus, 120000);
+</script>
+</body>
+</html>
