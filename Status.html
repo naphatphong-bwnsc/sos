@@ -6,13 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Mitr -->
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    html, body, body * {
+      font-family: 'Mitr', 'sans-serif' !important;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 min-h-screen flex flex-col justify-between">
 
   <div class="max-w-3xl mx-auto py-8 px-2">
-    <h2 class="text-2xl font-bold text-blue-700 mb-6 text-center drop-shadow">
-      ระบบติดตามสถานะการให้บริการ @BWNSC
-    </h2>
+
+    <!-- โลโก้และชื่อ -->
+    <div class="flex flex-col items-center mb-6">
+      <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-20 h-20 rounded-lg mb-2 shadow-lg border-4 border-white">
+      <h2 class="text-2xl font-bold text-blue-700 text-center drop-shadow-sm">ระบบติดตามสถานะการให้บริการ @BWNSC</h2>
+      <div class="text-blue-500 mt-2 text-sm">สำนักงานสภานักเรียนโรงเรียนบุญวัฒนา</div>
+    </div>
 
     <div class="overflow-x-auto rounded-lg shadow-lg bg-white">
       <table class="min-w-full divide-y divide-blue-200 text-center">
@@ -35,13 +48,39 @@
     <div class="mt-4 text-sm text-right text-gray-400">อัปเดตอัตโนมัติทุก 2 นาที</div>
   </div>
 
+  <!-- เครดิต footer -->
+  <footer class="relative z-10 py-12 bg-gradient-to-r from-blue-800 to-cyan-600 border-t border-white border-opacity-20 mt-10">
+      <div class="container mx-auto px-4 text-center">
+          <div class="flex items-center justify-center mb-4">
+              <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-12 h-12 rounded-lg mr-3 shadow border-2 border-white">
+              <span class="text-white font-bold text-xl">สภานักเรียนโรงเรียนบุญวัฒนา</span>
+          </div>
+          <div class="flex justify-center space-x-6 my-2">
+              <a href="https://www.facebook.com/CouncilBoon" class="text-white hover:text-blue-300 transition-colors" target="_blank" title="Facebook">
+                  <i class="fab fa-facebook-f text-xl"></i>
+              </a>
+              <a href="https://www.instagram.com/bwnsc_official/?hl=th" class="text-white hover:text-pink-300 transition-colors" target="_blank" title="Instagram">
+                  <i class="fab fa-instagram text-xl"></i>
+              </a>
+              <a href="mailto:scbwn@boon.ac.th" class="text-white hover:text-yellow-300 transition-colors" title="E-Mail">
+                  <i class="fas fa-envelope text-xl"></i>
+              </a>
+              <a href="https://www.bwnsc.in.th" class="text-white hover:text-green-300 transition-colors" target="_blank" title="Website">
+                  <i class="fas fa-globe text-xl"></i>
+              </a>
+          </div>
+          <p class="text-white text-sm mt-6">© 2025 สภานักเรียนโรงเรียนบุญวัฒนา - สงวนลิขสิทธิ์</p>
+          <p class="text-white text-sm mt-2">Developed by <span class="font-semibold text-white">FNPHAT</span></p>
+      </div>
+  </footer>
+
   <script>
+  // Simple CSV parser: รองรับ comma ในข้อความด้วย
   function parseCSV(text){
     const lines = text.trim().split("\n");
     const rows = [];
     for(let i=0; i<lines.length; i++){
-      let row = [];
-      let current = "", insideQuote = false;
+      let row = [], current = "", insideQuote = false;
       for(let j=0; j<lines[i].length; j++){
         const char = lines[i][j];
         if(char === '"') { insideQuote = !insideQuote; }
@@ -55,7 +94,7 @@
   }
 
   async function fetchStatus(){
-    // ใช้ลิงก์ CSV จากคุณ
+    // ใช้ลิงก์ CSV ที่คุณให้มา
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTrdF8uCStrZI0HpVYezDi78LjUekGVjgso2aSg0aGjVaZR_vzE0L8vWd3nlIcGpK5x_racFTsUqbEJ/pub?output=csv';
     try {
       const res = await fetch(sheetUrl);
@@ -70,7 +109,6 @@
         html = `<tr><td colspan="4" class="py-8 text-gray-400">ไม่พบข้อมูล</td></tr>`;
       } else {
         for(const row of dataRows){
-          // รองรับ row ที่บางคนอาจเว้นว่าง
           const [url, status, checked, detail] = row;
           let statusIcon = '', statusClass = '';
 
