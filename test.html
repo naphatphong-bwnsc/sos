@@ -135,61 +135,75 @@
     const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAAAOvT7p_4/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=HFVoBODw7Vz7OzGPQcnm7S8afs48mrbMQ0rH-g1AYo0";
 
     form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  e.preventDefault();
 
-      if (!form.checkValidity() || !selectedType || !contactInput.value.trim()) {
-        form.reportValidity();
-        if (!selectedType || !contactInput.value.trim()) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ',
-          });
-        }
-        return;
-      }
-
-      Swal.fire({
-        title: 'กำลังส่งข้อมูล...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-      });
-
-      const formData = new FormData(form);
-      formData.set("contact", `${selectedType}: ${contactInput.value}`);
-      const data = {};
-      formData.forEach((value, key) => data[key] = value);
-
-      const message = {
-        text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🆘กรุณาตอบกลับด้วยข้อความ เสร็จสิ้น`
-      };
-
-      try {
-        const res = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(message),
-        });
-
-        if (res.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
-            confirmButtonText: 'ตกลง'
-          });
-          form.reset();
-          contactInput.style.display = "none";
-          contactBtns.forEach(b => b.classList.remove("active"));
-        } else {
-          throw new Error();
-        }
-      } catch {
-        Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาดในการส่ง',
-          text: 'โปรดลองใหม่อีกครั้ง',
-        });
-      }
+  // ถ้ายังไม่เลือกปุ่มช่องทางการติดต่อ
+  if (!selectedType) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'กรุณาเลือกช่องทางการติดต่อ',
     });
+    return;
+  }
+
+  // ถ้าเลือกแล้วแต่ไม่กรอกข้อมูลช่องทาง
+  if (!contactInput.value.trim()) {
+    Swal.fire({
+      icon: 'warning',
+      title: `กรุณากรอก${selectedType}ของคุณ`,
+    });
+    return;
+  }
+
+  // ตรวจสอบช่องอื่น ๆ ในฟอร์ม
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  Swal.fire({
+    title: 'กำลังส่งข้อมูล...',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  const formData = new FormData(form);
+  formData.set("contact", `${selectedType}: ${contactInput.value}`);
+  const data = {};
+  formData.forEach((value, key) => data[key] = value);
+
+  const message = {
+    text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🆘กรุณาตอบกลับด้วยข้อความ เสร็จสิ้น`
+  };
+
+  try {
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(message),
+    });
+
+    if (res.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
+        confirmButtonText: 'ตกลง'
+      });
+      form.reset();
+      contactInput.style.display = "none";
+      contactBtns.forEach(b => b.classList.remove("active"));
+    } else {
+      throw new Error();
+    }
+  } catch {
+    Swal.fire({
+      icon: 'error',
+      title: 'เกิดข้อผิดพลาดในการส่ง',
+      text: 'โปรดลองใหม่อีกครั้ง',
+    });
+  }
+});
+
   </script>
 </body>
 </html>
