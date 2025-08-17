@@ -6,54 +6,57 @@
     <title>ระบบจัดการข้อความ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Google Sign-In API -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Sarabun', sans-serif; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <!-- Google Login Protection -->
-    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
-            <div class="text-center mb-6">
-                <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-16 h-16 mx-auto mb-4 rounded-full">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">เข้าสู่ระบบ</h2>
-                <p class="text-gray-600 text-sm">กรุณาเข้าสู่ระบบด้วย Google Account</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <div class="text-center mb-8">
+                <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-20 h-20 mx-auto mb-4 rounded-full">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">ระบบจัดการข้อความแจ้งปัญหา</h1>
+                <p class="text-blue-600 font-semibold">สภานักเรียนโรงเรียนบุญวัฒนา</p>
             </div>
             
-            <!-- Google Sign-In Button -->
-            <div id="g_id_onload"
-                 data-client_id="568612861935-v4fb8pii5mtvibnfsebe1a5ob608eo0c.apps.googleusercontent.com"
-                 data-context="signin"
-                 data-ux_mode="popup"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            
-            <div class="g_id_signin w-full mb-4" 
-                 data-type="standard"
-                 data-shape="rectangular"
-                 data-theme="outline"
-                 data-text="signin_with"
-                 data-size="large"
-                 data-logo_alignment="left"
-                 data-width="100%">
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p class="text-sm text-blue-800 text-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    เฉพาะผู้ใช้งานที่ได้รับอนุญาตเท่านั้น
+                </p>
             </div>
             
             <div class="text-center">
-                <p class="text-xs text-gray-500">สำหรับเจ้าหน้าที่สภานักเรียนเท่านั้น</p>
+                <div id="g_id_onload"
+                     data-client_id="568612861935-v4fb8pii5mtvibnfsebe1a5ob608eo0c.apps.googleusercontent.com"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-size="large"
+                     data-theme="outline"
+                     data-text="sign_in_with"
+                     data-shape="rectangular"
+                     data-logo_alignment="left">
+                </div>
             </div>
             
-            <div id="loginError" class="hidden mt-3 p-3 bg-red-100 border border-red-300 rounded-lg text-red-700 text-sm text-center">
-                การเข้าสู่ระบบล้มเหลว กรุณาลองใหม่อีกครั้ง
-            </div>
-            
-            <div id="loginSuccess" class="hidden mt-3 p-3 bg-green-100 border border-green-300 rounded-lg text-green-700 text-sm text-center">
-                <div class="flex items-center justify-center space-x-2">
-                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
-                    <span>กำลังเข้าสู่ระบบ...</span>
+            <div class="mt-6 text-center">
+                <p class="text-xs text-gray-500 mb-2">
+                    กรุณาใช้อีเมล @bwnsc.in.th หรืออีเมลที่ได้รับอนุญาต
+                </p>
+                <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
+                    <p class="text-xs text-yellow-800 font-medium mb-2">📋 การตั้งค่า Google Sheets:</p>
+                    <p class="text-xs text-yellow-700">
+                        1. สร้าง Google Apps Script<br>
+                        2. แทนที่ URL ในโค้ด<br>
+                        3. ตั้งค่า Spreadsheet ID
+                    </p>
                 </div>
             </div>
         </div>
@@ -62,15 +65,39 @@
     <div id="mainContent" class="container mx-auto px-2 py-4 hidden">
         <!-- Header -->
         <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
-            <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex-1">
+                    <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full">
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="text-right">
+                        <p id="userInfo" class="text-sm text-gray-600"></p>
+                    </div>
+                    <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                        <i class="fas fa-sign-out-alt mr-1"></i> ออกจากระบบ
+                    </button>
+                </div>
+            </div>
             <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 px-2 text-center">ระบบจัดการข้อความแจ้งปัญหา</h1>
             <p class="text-base sm:text-lg text-blue-600 font-semibold text-center">📋 สภานักเรียนโรงเรียนบุญวัฒนา</p>
         </div>
 
 
 
-        <!-- Messages Cards -->
-        <div class="bg-white rounded-lg shadow-lg p-4">
+        <!-- Navigation Tabs -->
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
+            <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                <button id="messagesTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md bg-blue-600 text-white transition-colors">
+                    📋 รายการข้อความ
+                </button>
+                <button id="usersTab" class="flex-1 py-2 px-4 text-sm font-medium rounded-md text-gray-600 hover:text-gray-800 transition-colors">
+                    👥 จัดการผู้ใช้งาน
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Section -->
+        <div id="messagesSection" class="bg-white rounded-lg shadow-lg p-4">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-semibold text-gray-800">รายการข้อความ</h2>
                 <span id="messageCount" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">2 รายการ</span>
@@ -147,6 +174,26 @@
             </div>
         </div>
 
+        <!-- Users Management Section -->
+        <div id="usersSection" class="bg-white rounded-lg shadow-lg p-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">จัดการผู้ใช้งาน</h2>
+                <button id="addUserBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    ➕ เพิ่มผู้ใช้งาน
+                </button>
+            </div>
+            
+            <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p class="text-sm text-blue-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    ผู้ใช้งานที่ได้รับอนุญาตสามารถเข้าสู่ระบบและจัดการข้อความได้
+                </p>
+            </div>
+            
+            <div id="usersContainer" class="space-y-3">
+                <!-- Users will be displayed here -->
+            </div>
+        </div>
 
         <footer class="py-6 sm:py-8 border-t border-gray-200 mt-8 sm:mt-12">
             <div class="text-center px-4">
@@ -179,7 +226,8 @@
     <!-- Email Modal -->
     <div id="emailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
         <div class="bg-white rounded-lg p-4 w-full max-w-sm">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">ส่งอีเมลแจ้งเตือน</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2 text-center">ส่งอีเมลแจ้งเตือน</h3>
+            <p class="text-sm text-red-600 font-medium text-center mb-4">⚠️ จำเป็นต้องส่งอีเมลก่อนเปลี่ยนสถานะเป็น "เสร็จสิ้น"</p>
             <div id="emailContent" class="mb-4 p-3 bg-gray-50 rounded-lg text-sm">
                 <!-- Email content will be inserted here -->
             </div>
@@ -190,63 +238,276 @@
         </div>
     </div>
 
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">เพิ่มผู้ใช้งานใหม่</h3>
+            
+            <form id="addUserForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">อีเมล</label>
+                    <input type="email" id="userEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="example@bwnsc.in.th" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ-นามสกุล</label>
+                    <input type="text" id="userName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="ชื่อ นามสกุล" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ตำแหน่ง</label>
+                    <select id="userRole" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">เลือกตำแหน่ง</option>
+                        <option value="ประธานสภานักเรียน">ประธานสภานักเรียน</option>
+                        <option value="รองประธานสภานักเรียน">รองประธานสภานักเรียน</option>
+                        <option value="เลขานุการ">เลขานุการ</option>
+                        <option value="เหรัญญิก">เหรัญญิก</option>
+                        <option value="ประชาสัมพันธ์">ประชาสัมพันธ์</option>
+                        <option value="กรรมการ">กรรมการ</option>
+                        <option value="ผู้ดูแลระบบ">ผู้ดูแลระบบ</option>
+                    </select>
+                </div>
+                
+                <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p class="text-sm text-yellow-800">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        ผู้ใช้งานที่เพิ่มจะสามารถเข้าสู่ระบบและจัดการข้อความได้ทันที
+                    </p>
+                </div>
+            </form>
+            
+            <div class="flex space-x-3 mt-6">
+                <button id="cancelAddUser" class="flex-1 py-3 px-4 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg font-medium transition-colors">ยกเลิก</button>
+                <button id="confirmAddUser" class="flex-1 py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">เพิ่มผู้ใช้งาน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirmDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg p-6 w-full max-w-sm">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">ยืนยันการลบ</h3>
+            <p id="deleteConfirmText" class="text-gray-600 text-center mb-6"></p>
+            <div class="flex space-x-3">
+                <button id="cancelDelete" class="flex-1 py-3 px-4 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg font-medium transition-colors">ยกเลิก</button>
+                <button id="confirmDelete" class="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">ลบ</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let messages = [];
         let emailLog = [];
+        let currentUser = null;
 
-        // Authorized email domains/addresses
-        const authorizedEmails = [
-            'admin@bwnsc.in.th',
-            'scbwn@boon.ac.th',
-            'president@bwnsc.in.th',
-            'vicepresident@bwnsc.in.th',
-            'secretary@bwnsc.in.th',
-            // Add more authorized emails here
+        // Google Apps Script Configuration
+        const GOOGLE_APPS_SCRIPT_CONFIG = {
+            // URL ของ Google Apps Script Web App ที่จะสร้าง
+            webAppUrl: 'https://script.google.com/macros/s/AKfycbzjU3j6iIjxLw8uPjws5kMC1o9o-Idm9OVxD_eglU93vMO7ZCwd0eVEQ556ASI5d2Pn/exec',
+            // Spreadsheet ID ที่จะเก็บข้อมูล
+            spreadsheetId: '1_maa3xddr7mjLyo_s_yoRjQ-hd1IIuqxMCdiurCj0Yo'
+        };
+
+        // User management system
+        let authorizedUsers = [
+            { email: 'admin@bwnsc.in.th', name: 'ผู้ดูแลระบบ', role: 'ผู้ดูแลระบบ', addedDate: '2024-01-01' },
+            { email: 'scbwn@boon.ac.th', name: 'สภานักเรียน', role: 'ประธานสภานักเรียน', addedDate: '2024-01-01' },
+            { email: 'naphatphong.p@mail.bwnsc.in.th', name: 'นภัสพงศ์ ปิยะวัฒนกุล', role: 'ผู้ดูแลระบบ', addedDate: '2024-01-15' }
         ];
 
-        // Google Sign-In callback function
+        // Get authorized emails array
+        function getAuthorizedEmails() {
+            return authorizedUsers.map(user => user.email);
+        }
+
+        // Google Login Handler
         function handleCredentialResponse(response) {
-            const errorDiv = document.getElementById('loginError');
-            const successDiv = document.getElementById('loginSuccess');
+            // Decode JWT token
+            const responsePayload = decodeJwtResponse(response.credential);
             
-            try {
-                // Decode JWT token to get user info
-                const payload = JSON.parse(atob(response.credential.split('.')[1]));
-                const userEmail = payload.email;
-                const userName = payload.name;
+            console.log("ID: " + responsePayload.sub);
+            console.log('Full Name: ' + responsePayload.name);
+            console.log('Email: ' + responsePayload.email);
+            
+            // Check if user is authorized
+            const userEmail = responsePayload.email;
+            const isAuthorized = getAuthorizedEmails().includes(userEmail) || userEmail.endsWith('@bwnsc.in.th');
+            
+            if (isAuthorized) {
+                currentUser = {
+                    email: userEmail,
+                    name: responsePayload.name,
+                    picture: responsePayload.picture
+                };
                 
-                // Check if user is authorized
-                if (authorizedEmails.includes(userEmail) || userEmail.endsWith('@bwnsc.in.th')) {
-                    // Show loading state
-                    successDiv.classList.remove('hidden');
-                    errorDiv.classList.add('hidden');
-                    
-                    // Successful login
-                    setTimeout(() => {
-                        document.getElementById('loginScreen').classList.add('hidden');
-                        document.getElementById('mainContent').classList.remove('hidden');
-                        
-                        // Show welcome message
-                        setTimeout(() => {
-                            alert(`เข้าสู่ระบบสำเร็จ!\nยินดีต้อนรับ ${userName}\n${userEmail}`);
-                        }, 500);
-                    }, 1500);
-                } else {
-                    // Unauthorized user
-                    errorDiv.textContent = 'คุณไม่มีสิทธิ์เข้าใช้งานระบบนี้ กรุณาติดต่อผู้ดูแลระบบ';
-                    errorDiv.classList.remove('hidden');
-                    successDiv.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Error processing Google Sign-In:', error);
-                errorDiv.textContent = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง';
-                errorDiv.classList.remove('hidden');
-                successDiv.classList.add('hidden');
+                // Log login activity
+                logActivity('LOGIN', `${currentUser.name} เข้าสู่ระบบ`);
+                
+                // Show main content
+                showMainContent();
+            } else {
+                alert('ขออภัย คุณไม่มีสิทธิ์เข้าใช้งานระบบนี้\nกรุณาติดต่อผู้ดูแลระบบ');
+                signOut();
             }
         }
 
-        // Make function globally available
-        window.handleCredentialResponse = handleCredentialResponse;
+        // Decode JWT token
+        function decodeJwtResponse(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        // Show main content after successful login
+        function showMainContent() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            
+            // Update user info display
+            document.getElementById('userInfo').innerHTML = `
+                <span class="font-medium">${currentUser.name}</span><br>
+                <span class="text-xs">${currentUser.email}</span>
+            `;
+        }
+
+        // Sign out function
+        function signOut() {
+            if (currentUser) {
+                logActivity('LOGOUT', `${currentUser.name} ออกจากระบบ`);
+            }
+            
+            currentUser = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainContent').classList.add('hidden');
+            
+            // Reset Google Sign-In
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.disableAutoSelect();
+            }
+        }
+
+        // Send data to Google Sheets via Apps Script
+        async function sendToGoogleSheets(data, sheetName = 'ActivityLog') {
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_CONFIG.webAppUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'addData',
+                        sheetName: sheetName,
+                        data: data
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    console.log('Data sent to Google Sheets successfully');
+                    return true;
+                } else {
+                    console.error('Error sending to Google Sheets:', result.error);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                return false;
+            }
+        }
+
+        // Log activity to Google Sheets
+        async function logActivity(action, description) {
+            const timestamp = new Date().toLocaleString('th-TH', {
+                timeZone: 'Asia/Bangkok',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const logData = [
+                timestamp,
+                action,
+                currentUser ? currentUser.name : 'Unknown',
+                currentUser ? currentUser.email : 'Unknown',
+                description,
+                window.location.href
+            ];
+            
+            // ส่งข้อมูลไป Google Sheets
+            const success = await sendToGoogleSheets(logData, 'ActivityLog');
+            
+            if (!success) {
+                // หากส่งไม่สำเร็จ เก็บใน localStorage เป็น backup
+                const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
+                logs.push({
+                    timestamp: timestamp,
+                    action: action,
+                    user: currentUser ? currentUser.name : 'Unknown',
+                    email: currentUser ? currentUser.email : 'Unknown',
+                    description: description
+                });
+                localStorage.setItem('activityLogs', JSON.stringify(logs));
+            }
+        }
+
+        // Save user data to Google Sheets
+        async function saveUserToSheets(userData) {
+            const userRow = [
+                new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+                userData.email,
+                userData.name,
+                userData.role,
+                userData.addedDate,
+                'ACTIVE'
+            ];
+            
+            return await sendToGoogleSheets(userRow, 'Users');
+        }
+
+        // Save message status to Google Sheets
+        async function saveMessageStatusToSheets(messageData) {
+            const statusRow = [
+                new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+                messageData.studentId,
+                messageData.studentName,
+                messageData.oldStatus,
+                messageData.newStatus,
+                currentUser ? currentUser.name : 'Unknown',
+                currentUser ? currentUser.email : 'Unknown'
+            ];
+            
+            return await sendToGoogleSheets(statusRow, 'MessageStatus');
+        }
+
+        // Log status change activity
+        async function logStatusChange(studentId, studentName, oldStatus, newStatus) {
+            const description = `เปลี่ยนสถานะของ ${studentName} (${studentId}) จาก "${oldStatus}" เป็น "${newStatus}"`;
+            
+            // บันทึกใน Activity Log
+            await logActivity('STATUS_CHANGE', description);
+            
+            // บันทึกใน Message Status Sheet
+            await saveMessageStatusToSheets({
+                studentId: studentId,
+                studentName: studentName,
+                oldStatus: oldStatus,
+                newStatus: newStatus
+            });
+        }
+
+        // Log email sent activity
+        function logEmailSent(studentId, studentName, email) {
+            const description = `ส่งอีเมลแจ้งเตือนไปยัง ${studentName} (${email})`;
+            logActivity('EMAIL_SENT', description);
+        }
+
+
 
         // Initialize status colors
         function updateStatusColors() {
@@ -293,11 +554,16 @@
                 const email = this.getAttribute('data-email');
                 const name = this.getAttribute('data-name');
 
+                // Log status change
+                if (previousValue !== newValue) {
+                    logStatusChange(studentId, name, previousValue, newValue);
+                }
+
                 // Update colors
                 updateStatusColors();
 
-                // Check if status changed from "รอดำเนินการ" to "เสร็จสิ้น"
-                if (previousValue === 'รอดำเนินการ' && newValue === 'เสร็จสิ้น') {
+                // Check if status changed to "เสร็จสิ้น" from any other status
+                if (previousValue !== 'เสร็จสิ้น' && newValue === 'เสร็จสิ้น') {
                     showEmailModal(studentId, email, name);
                 }
 
@@ -313,20 +579,16 @@
             const content = document.getElementById('emailContent');
             
             content.innerHTML = `
-                <div class="text-sm">
-                    <p><strong>ถึง:</strong> ${email}</p>
-                    <p><strong>ชื่อ:</strong> ${name}</p>
-                    <p><strong>รหัสนักเรียน:</strong> ${studentId}</p>
-                    <hr class="my-3">
-                    <p><strong>หัวข้อ:</strong> แจ้งเตือนสถานะข้อความ - เสร็จสิ้น</p>
-                    <p><strong>เนื้อหา:</strong></p>
-                    <div class="bg-white p-3 rounded border mt-2">
-                        เรียน ${name}<br><br>
-                        ขอแจ้งให้ทราบว่าข้อความของท่าน (รหัสนักเรียน: ${studentId}) ได้รับการดำเนินการเสร็จสิ้นแล้ว<br><br>
-                        เพื่อพัฒนาระบบให้ดียิ่งขึ้น กรุณาตอบแบบสอบถามการใช้งานระบบแจ้งปัญหาการใช้งานระบบ @BWNSC ผ่านลิงก์ด้านล่าง:<br>
-                        <a href="https://forms.gle/survey-link" class="text-blue-600 underline">แบบสอบถามความพึงพอใจ</a><br><br>
-                        ขอบคุณที่ใช้บริการ<br>
-                        สภานักเรียนโรงเรียนบุญวัฒนา
+                <div class="text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-envelope text-4xl text-blue-600 mb-3"></i>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">ยืนยันการส่งอีเมลแจ้งเตือน</h4>
+                        <p class="text-gray-600">ส่งอีเมลแจ้งเตือนการเสร็จสิ้นงานไปยัง:</p>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-lg">
+                        <p class="font-semibold text-gray-800">${name}</p>
+                        <p class="text-sm text-gray-600">${email}</p>
+                        <p class="text-xs text-gray-500">รหัสนักเรียน: ${studentId}</p>
                     </div>
                 </div>
             `;
@@ -340,15 +602,16 @@
             modal.setAttribute('data-name', name);
         }
 
-        // Modal event listeners
-        document.getElementById('cancelEmail').addEventListener('click', function() {
-            document.getElementById('emailModal').classList.add('hidden');
-            document.getElementById('emailModal').classList.remove('flex');
-        });
+        // Modal event listeners (handled below)
 
         document.getElementById('sendEmail').addEventListener('click', function() {
             const modal = document.getElementById('emailModal');
             const email = modal.getAttribute('data-email');
+            const studentId = modal.getAttribute('data-student-id');
+            const name = modal.getAttribute('data-name');
+            
+            // Log email sent
+            logEmailSent(studentId, name, email);
             
             // Close modal
             modal.classList.add('hidden');
@@ -358,7 +621,143 @@
             alert(`ส่งอีเมลแจ้งเตือนไปยัง ${email} เรียบร้อยแล้ว`);
         });
 
+        document.getElementById('cancelEmail').addEventListener('click', function() {
+            const modal = document.getElementById('emailModal');
+            const selectElement = document.querySelector(`[data-email="${modal.getAttribute('data-email')}"]`);
+            
+            // Revert status back to previous value
+            if (selectElement) {
+                const previousValue = selectElement.getAttribute('data-previous-value');
+                selectElement.value = previousValue;
+                updateStatusColors();
+            }
+            
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            
+            alert('ยกเลิกการส่งอีเมล - สถานะถูกเปลี่ยนกลับ');
+        });
 
+
+
+        // Tab switching functions
+        function switchToMessagesTab() {
+            document.getElementById('messagesTab').className = 'flex-1 py-2 px-4 text-sm font-medium rounded-md bg-blue-600 text-white transition-colors';
+            document.getElementById('usersTab').className = 'flex-1 py-2 px-4 text-sm font-medium rounded-md text-gray-600 hover:text-gray-800 transition-colors';
+            document.getElementById('messagesSection').classList.remove('hidden');
+            document.getElementById('usersSection').classList.add('hidden');
+        }
+
+        function switchToUsersTab() {
+            document.getElementById('usersTab').className = 'flex-1 py-2 px-4 text-sm font-medium rounded-md bg-blue-600 text-white transition-colors';
+            document.getElementById('messagesTab').className = 'flex-1 py-2 px-4 text-sm font-medium rounded-md text-gray-600 hover:text-gray-800 transition-colors';
+            document.getElementById('usersSection').classList.remove('hidden');
+            document.getElementById('messagesSection').classList.add('hidden');
+            renderUsers();
+        }
+
+        // Render users list
+        function renderUsers() {
+            const container = document.getElementById('usersContainer');
+            container.innerHTML = '';
+
+            authorizedUsers.forEach((user, index) => {
+                const userCard = document.createElement('div');
+                userCard.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
+                userCard.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800 text-lg">${user.name}</h3>
+                            <p class="text-sm text-gray-600 mb-1">${user.email}</p>
+                            <div class="flex items-center space-x-4 text-xs text-gray-500">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">${user.role}</span>
+                                <span>เพิ่มเมื่อ: ${new Date(user.addedDate).toLocaleDateString('th-TH')}</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteUser(${index})" class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 transition-colors">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(userCard);
+            });
+        }
+
+        // Add user function
+        async function addUser() {
+            const email = document.getElementById('userEmail').value.trim();
+            const name = document.getElementById('userName').value.trim();
+            const role = document.getElementById('userRole').value;
+
+            if (!email || !name || !role) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            // Check if email already exists
+            if (authorizedUsers.some(user => user.email === email)) {
+                alert('อีเมลนี้มีอยู่ในระบบแล้ว');
+                return;
+            }
+
+            // Add new user
+            const newUser = {
+                email: email,
+                name: name,
+                role: role,
+                addedDate: new Date().toISOString().split('T')[0]
+            };
+
+            // Save to Google Sheets
+            const success = await saveUserToSheets(newUser);
+            
+            if (success) {
+                authorizedUsers.push(newUser);
+                
+                // Log activity
+                await logActivity('ADD_USER', `เพิ่มผู้ใช้งานใหม่: ${name} (${email})`);
+                
+                // Close modal and reset form
+                document.getElementById('addUserModal').classList.add('hidden');
+                document.getElementById('addUserModal').classList.remove('flex');
+                document.getElementById('addUserForm').reset();
+                
+                // Refresh users list
+                renderUsers();
+                
+                alert(`เพิ่มผู้ใช้งาน ${name} เรียบร้อยแล้ว`);
+            } else {
+                alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง');
+            }
+        }
+
+        // Delete user function
+        let userToDelete = null;
+        
+        function deleteUser(index) {
+            userToDelete = index;
+            const user = authorizedUsers[index];
+            document.getElementById('deleteConfirmText').textContent = `คุณต้องการลบผู้ใช้งาน "${user.name}" (${user.email}) หรือไม่?`;
+            document.getElementById('confirmDeleteModal').classList.remove('hidden');
+            document.getElementById('confirmDeleteModal').classList.add('flex');
+        }
+
+        function confirmDeleteUser() {
+            if (userToDelete !== null) {
+                const deletedUser = authorizedUsers[userToDelete];
+                authorizedUsers.splice(userToDelete, 1);
+                userToDelete = null;
+                
+                // Close modal
+                document.getElementById('confirmDeleteModal').classList.add('hidden');
+                document.getElementById('confirmDeleteModal').classList.remove('flex');
+                
+                // Refresh users list
+                renderUsers();
+                
+                alert(`ลบผู้ใช้งาน ${deletedUser.name} เรียบร้อยแล้ว`);
+            }
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -368,7 +767,39 @@
             document.querySelectorAll('.status-select').forEach(select => {
                 attachStatusChangeListener(select);
             });
+            
+
+
+            // Tab switching listeners
+            document.getElementById('messagesTab').addEventListener('click', switchToMessagesTab);
+            document.getElementById('usersTab').addEventListener('click', switchToUsersTab);
+
+            // Add user modal listeners
+            document.getElementById('addUserBtn').addEventListener('click', function() {
+                document.getElementById('addUserModal').classList.remove('hidden');
+                document.getElementById('addUserModal').classList.add('flex');
+            });
+
+            document.getElementById('cancelAddUser').addEventListener('click', function() {
+                document.getElementById('addUserModal').classList.add('hidden');
+                document.getElementById('addUserModal').classList.remove('flex');
+                document.getElementById('addUserForm').reset();
+            });
+
+            document.getElementById('confirmAddUser').addEventListener('click', addUser);
+
+            // Delete confirmation modal listeners
+            document.getElementById('cancelDelete').addEventListener('click', function() {
+                document.getElementById('confirmDeleteModal').classList.add('hidden');
+                document.getElementById('confirmDeleteModal').classList.remove('flex');
+                userToDelete = null;
+            });
+
+            document.getElementById('confirmDelete').addEventListener('click', confirmDeleteUser);
+
+            // Logout button listener
+            document.getElementById('logoutBtn').addEventListener('click', signOut);
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97096573741d2705',t:'MTc1NTQzNjA2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97098c6f4188d036',t:'MTc1NTQzNzY2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
