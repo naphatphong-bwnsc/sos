@@ -58,7 +58,7 @@
         </div>
         <div>
           <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
-          <input type="text" name="studentId" required class="w-full p-3 border rounded-xl shadow-sm" />
+          <input type="text" name="studentId" pattern="\d{5}" maxlength="5" required class="w-full p-3 border rounded-xl shadow-sm" />
         </div>
       </div>
 
@@ -112,84 +112,96 @@
 
     </form>
   </div>
+<script>
+  feather.replace();
 
-  <script>
-    feather.replace();
+  const form = document.getElementById("issueForm");
+  const contactBtns = document.querySelectorAll(".contact-btn");
+  const contactInput = document.getElementById("contactValue");
+  let selectedType = "";
 
-    const form = document.getElementById("issueForm");
-    const contactBtns = document.querySelectorAll(".contact-btn");
-    const contactInput = document.getElementById("contactValue");
-    let selectedType = "";
+  contactBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      selectedType = btn.dataset.type;
+      contactBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      contactInput.style.display = "block";
+      contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
+      contactInput.focus();
+    });
+  });
 
-    contactBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedType = btn.dataset.type;
-        contactBtns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        contactInput.style.display = "block";
-        contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
-        contactInput.focus();
-      });
+  // 🔗 URL ของ Google Chat Webhook
+  const webhookUrl = "https://chat.googleapis.com/v1/spaces/..."; 
+  // 🔗 URL ของ Google Apps Script (Web App)
+  const sheetUrl = "https://script.google.com/macros/s/xxxx/exec"; 
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!form.checkValidity() || !selectedType || !contactInput.value.trim()) {
+      form.reportValidity();
+      if (!selectedType || !contactInput.value.trim()) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ',
+        });
+      }
+      return;
+    }
+
+    Swal.fire({
+      title: 'กำลังส่งข้อมูล...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
     });
 
-    const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQAF5fvtiU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YUcLjm3AHIXiIi663L-hRF43OLvuCQuxla_bTzmg6bk";
+    const formData = new FormData(form);
+    formData.set("contact", `${selectedType}: ${contactInput.value}`);
+    const data = {};
+    formData.forEach((value, key) => data[key] = value);
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    // เพิ่มเวลาแจ้ง
+    const now = new Date().toLocaleString("th-TH");
+    data.timestamp = now;
 
-      if (!form.checkValidity() || !selectedType || !contactInput.value.trim()) {
-        form.reportValidity();
-        if (!selectedType || !contactInput.value.trim()) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ',
-          });
-        }
-        return;
-      }
+    // ข้อความส่งไป Google Chat
+    const message = {
+      text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🕒 เวลาแจ้ง: ${now}\n🆘 กรุณาตอบกลับด้วยข้อความ "เสร็จสิ้น"`
+    };
+
+    try {
+      // ส่งไป Google Chat
+      await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(message),
+      });
+
+      // ส่งไปบันทึกใน Google Sheets
+      await fetch(sheetUrl, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+      });
 
       Swal.fire({
-        title: 'กำลังส่งข้อมูล...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
+        icon: 'success',
+        title: 'บันทึกข้อมูลสำเร็จ',
+        text: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
+        confirmButtonText: 'ตกลง'
       });
-
-      const formData = new FormData(form);
-      formData.set("contact", `${selectedType}: ${contactInput.value}`);
-      const data = {};
-      formData.forEach((value, key) => data[key] = value);
-
-      const message = {
-        text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🆘กรุณาตอบกลับด้วยข้อความ เสร็จสิ้น`
-      };
-
-      try {
-        const res = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(message),
-        });
-
-        if (res.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
-            confirmButtonText: 'ตกลง'
-          });
-          form.reset();
-          contactInput.style.display = "none";
-          contactBtns.forEach(b => b.classList.remove("active"));
-        } else {
-          throw new Error();
-        }
-      } catch {
-        Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาดในการส่ง',
-          text: 'โปรดลองใหม่อีกครั้ง',
-        });
-      }
-    });
-  </script>
+      form.reset();
+      contactInput.style.display = "none";
+      contactBtns.forEach(b => b.classList.remove("active"));
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาดในการส่ง',
+        text: 'โปรดลองใหม่อีกครั้ง',
+      });
+    }
+  });
+</script>
 </body>
 </html>
