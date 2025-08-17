@@ -1,195 +1,384 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>แจ้งปัญหาการใช้งานระบบ @BWNSC</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Prompt', sans-serif; }
-    .contact-btn.active {
-      background-color: #6366f1 !important;
-      color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📣 แจ้งปัญหาการใช้งานระบบ @BWNSC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&display=swap');
+        body { font-family: 'Mitr', sans-serif; }
+    </style>
 </head>
-<body class="bg-gradient-to-b from-indigo-50 to-white min-h-screen p-6">
-  <div class="max-w-xl mx-auto bg-white shadow-xl rounded-2xl p-6 border border-indigo-100">
-    <div class="flex justify-center mb-4">
-      <img src="https://data.bwnsc.in.th/sc.png" alt="โลโก้โรงเรียน" class="h-16">
+<body class="bg-white min-h-screen py-4 sm:py-8">
+    <div class="max-w-2xl mx-auto px-3 sm:px-4">
+        <!-- Header -->
+        <div class="text-center mb-6 sm:mb-8">
+            <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 px-2">สภานักเรียนโรงเรียนบุญวัฒนา</h1>
+            <p class="text-base sm:text-lg text-blue-600 font-semibold">📣แจ้งปัญหาการใช้งานระบบ @BWNSC</p>
+            <p class="text-sm sm:text-base text-gray-600 mt-2 px-2">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อให้เราสามารถช่วยเหลือคุณได้อย่างรวดเร็ว</p>
+        </div>
+
+        <!-- Form -->
+        <div class="space-y-4 sm:space-y-6">
+            <form id="issueForm" class="space-y-4 sm:space-y-6">
+                <!-- ชื่อ-สกุล -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ-สกุล *</label>
+                    <input type="text" id="fullName" required 
+                           class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                           placeholder="กรอกชื่อ-นามสกุล">
+                </div>
+
+                <!-- ชื่อเล่น -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อเล่น *</label>
+                    <input type="text" id="nickname" required 
+                           class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                           placeholder="กรอกชื่อเล่น">
+                </div>
+
+                <!-- ฝ่าย -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ฝ่าย *</label>
+                    <select id="department" required 
+                            class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base">
+                        <option value="">เลือกฝ่าย</option>
+                        <option value="ฝ่ายนโยบายและแผนงานวิชาการ">ฝ่ายนโยบายและแผนงานวิชาการ</option>
+                        <option value="ฝ่ายสรุปและประเมินผล">ฝ่ายสรุปและประเมินผล</option>
+                        <option value="ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร">ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร</option>
+                        <option value="ฝ่ายปฏิคมและสวัสดิการ">ฝ่ายปฏิคมและสวัสดิการ</option>
+                        <option value="ฝ่ายอาคารสถานที่และสิ่งแวดล้อม">ฝ่ายอาคารสถานที่และสิ่งแวดล้อม</option>
+                        <option value="ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์">ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์</option>
+                        <option value="ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์">ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์</option>
+                        <option value="ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม">ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม</option>
+                        <option value="ฝ่ายส่งเสริมกิจกรรมและนันทนาการ">ฝ่ายส่งเสริมกิจกรรมและนันทนาการ</option>
+                        <option value="บริหาร">บริหาร</option>
+                    </select>
+                </div>
+
+                <!-- รุ่น -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รุ่น</label>
+                    <input type="number" id="generation" min="1" max="50"
+                           class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                           placeholder="กรอกรุ่น (ตัวเลข)">
+                </div>
+
+                <!-- รหัสนักเรียน -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รหัสนักเรียน *</label>
+                    <input type="text" id="studentId" required pattern="[0-9]{5}" maxlength="5"
+                           class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                           placeholder="กรอกรหัสนักเรียน 5 หลัก">
+                </div>
+
+                <!-- ช่องทางการติดต่อ -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">เลือกช่องทางการติดต่อ *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <label class="flex items-center p-4 sm:p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="contact" value="โทรศัพท์" required class="mr-3 text-blue-600" onchange="showContactField('phone')">
+                            <span class="text-base">📞 โทรศัพท์</span>
+                        </label>
+                        <label class="flex items-center p-4 sm:p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="contact" value="อินสตาแกรม" required class="mr-3 text-blue-600" onchange="showContactField('instagram')">
+                            <span class="text-base">📷 อินสตาแกรม</span>
+                        </label>
+                        <label class="flex items-center p-4 sm:p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="contact" value="Line" required class="mr-3 text-blue-600" onchange="showContactField('line')">
+                            <span class="text-base">💬 Line</span>
+                        </label>
+                        <label class="flex items-center p-4 sm:p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors">
+                            <input type="radio" name="contact" value="Facebook" required class="mr-3 text-blue-600" onchange="showContactField('facebook')">
+                            <span class="text-base">📘 Facebook</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Contact Detail Fields -->
+                    <div id="phoneField" class="hidden">
+                        <input type="tel" id="phoneNumber" 
+                               class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                               placeholder="กรอกเบอร์โทรศัพท์">
+                    </div>
+                    <div id="instagramField" class="hidden">
+                        <input type="text" id="instagramUsername" 
+                               class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                               placeholder="กรอกชื่อผู้ใช้ Instagram">
+                    </div>
+                    <div id="lineField" class="hidden">
+                        <input type="text" id="lineId" 
+                               class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                               placeholder="กรอก Line ID">
+                    </div>
+                    <div id="facebookField" class="hidden">
+                        <input type="text" id="facebookName" 
+                               class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base"
+                               placeholder="กรอกชื่อ Facebook">
+                    </div>
+                </div>
+
+                <!-- หัวข้อปัญหา -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">หัวข้อปัญหา *</label>
+                    <select id="issueType" required 
+                            class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base">
+                        <option value="">เลือกหัวข้อปัญหา</option>
+                        <option value="เข้าสู่ระบบไม่ได้">🔐 เข้าสู่ระบบไม่ได้</option>
+                        <option value="ขออนุมัติการเข้าถึงแอป">📱 ขออนุมัติการเข้าถึงแอป</option>
+                        <option value="ลืมรหัสผ่าน">🔑 ลืมรหัสผ่าน</option>
+                        <option value="ใช้งาน Canva Pro ไม่ได้">🎨 ใช้งาน Canva Pro ไม่ได้</option>
+                        <option value="อื่น ๆ">❓ อื่น ๆ (โปรดระบุในช่องรายละเอียด)</option>
+                    </select>
+                </div>
+
+                <!-- รายละเอียด -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">รายละเอียดปัญหา *</label>
+                    <textarea id="details" required rows="4" 
+                              class="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none text-base"
+                              placeholder="ปัญหาที่พบ เช่น ข้อความแสดงข้อผิดพลาด, ขั้นตอนที่ทำก่อนเกิดปัญหา, หรือสิ่งที่คาดหวัง"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" 
+                            class="w-full bg-blue-600 text-white font-medium py-4 sm:py-3 px-4 rounded-md hover:bg-blue-700 transition-colors text-base">
+                        📤 ส่งรายงานปัญหา
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading Modal -->
+        <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 px-4">
+            <div class="bg-white rounded-lg p-6 sm:p-8 max-w-sm sm:max-w-md w-full text-center">
+                <div class="animate-spin text-5xl sm:text-6xl mb-4">⏳</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">กำลังส่ง...</h3>
+                <p class="text-gray-600 text-sm sm:text-base">กรุณารอสักครู่</p>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 px-4">
+            <div class="bg-white rounded-lg p-6 sm:p-8 max-w-sm sm:max-w-md w-full text-center">
+                <div class="text-5xl sm:text-6xl mb-4">✅</div>
+                <h3 class="text-xl sm:text-2xl font-bold text-green-600 mb-4">สำเร็จ!</h3>
+                <p class="text-gray-600 mb-6 text-sm sm:text-base">กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น</p>
+                <button onclick="closeModal()" 
+                        class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors text-base">
+                    ตกลง
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-6 sm:py-8 border-t border-gray-200 mt-8 sm:mt-12">
+            <div class="text-center px-4">
+                <div class="flex items-center justify-center mb-4">
+                    <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-6 h-6 sm:w-8 sm:h-8 rounded mr-2">
+                    <span class="text-gray-800 font-medium text-sm sm:text-base">สภานักเรียนโรงเรียนบุญวัฒนา</span>
+                </div>
+                <div class="flex justify-center space-x-6 mb-4">
+                    <a href="https://www.facebook.com/CouncilBoon" class="text-gray-600 hover:text-blue-600 transition-colors text-lg">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/bwnsc_official/?hl=th" class="text-gray-600 hover:text-pink-600 transition-colors text-lg">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="mailto:scbwn@boon.ac.th" class="text-gray-600 hover:text-blue-600 transition-colors text-lg">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="https://www.bwnsc.in.th" class="text-gray-600 hover:text-blue-600 transition-colors text-lg">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-xs sm:text-sm">© 2025 สภานักเรียนโรงเรียนบุญวัฒนา - สงวนลิขสิทธิ์</p>
+                <p class="text-gray-500 text-xs sm:text-sm mt-1">
+                    Developed by <span class="font-medium text-gray-700">FNPHAT</span>
+                </p>
+            </div>
+        </footer>
     </div>
-    <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">📣 แจ้งปัญหาการใช้งานระบบ @BWNSC</h2>
 
-    <form id="issueForm" class="space-y-4">
-      <div>
-        <label class="block font-semibold text-indigo-700">ชื่อ-สกุล</label>
-        <input type="text" name="fullname" required class="w-full p-3 border rounded-xl shadow-sm" />
-      </div>
-
-      <div>
-        <label class="block font-semibold text-indigo-700">ชื่อเล่น</label>
-        <input type="text" name="nickname" required class="w-full p-3 border rounded-xl shadow-sm" />
-      </div>
-
-      <div>
-        <label class="block font-semibold text-indigo-700">ฝ่าย</label>
-        <select name="department" required class="w-full p-3 border rounded-xl shadow-sm">
-          <option value="" disabled selected>-- เลือกฝ่าย --</option>
-          <option value="ฝ่ายนโยบายและแผนงานวิชาการ">ฝ่ายนโยบายและแผนงานวิชาการ</option>
-          <option value="ฝ่ายสรุปและประเมินผล">ฝ่ายสรุปและประเมินผล</option>
-          <option value="ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร">ฝ่ายประชาสัมพันธ์และสื่อสารองค์กร</option>
-          <option value="ฝ่ายปฏิคมและสวัสดิการ">ฝ่ายปฏิคมและสวัสดิการ</option>
-          <option value="ฝ่ายอาคารสถานที่และสิ่งแวดล้อม">ฝ่ายอาคารสถานที่และสิ่งแวดล้อม</option>
-          <option value="ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์">ฝ่ายเทคโนโลยีสารสนเทศและโสตทัศนูปกรณ์</option>
-          <option value="ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์">ฝ่ายส่งเสริมระเบียบวินัยและคุณลักษณะอันพึงประสงค์</option>
-          <option value="ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม">ฝ่ายส่งเสริมคุณธรรมจริยธรรมและวัฒนธรรม</option>
-          <option value="ฝ่ายส่งเสริมกิจกรรมและนันทนาการ">ฝ่ายส่งเสริมกิจกรรมและนันทนาการ</option>
-          <option value="บริหาร">บริหาร</option>
-        </select>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block font-semibold text-indigo-700">รุ่น</label>
-          <input type="text" name="generation" required class="w-full p-3 border rounded-xl shadow-sm" />
-        </div>
-        <div>
-          <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
-          <input type="text" name="studentId" required class="w-full p-3 border rounded-xl shadow-sm" />
-        </div>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-indigo-700 mb-1">เลือกช่องทางการติดต่อ</label>
-        <div class="flex gap-3 text-gray-600">
-          <button type="button" data-type="เฟซบุ๊ก" class="contact-btn p-2 rounded-full hover:bg-blue-100" title="Facebook">
-            <i data-feather="facebook"></i>
-          </button>
-          <button type="button" data-type="ไลน์" class="contact-btn p-2 rounded-full hover:bg-green-100" title="LINE">
-            <i data-feather="message-circle"></i>
-          </button>
-          <button type="button" data-type="ไอจี" class="contact-btn p-2 rounded-full hover:bg-pink-100" title="Instagram">
-            <i data-feather="instagram"></i>
-          </button>
-          <button type="button" data-type="หมายเลขโทรศัพท์" class="contact-btn p-2 rounded-full hover:bg-yellow-100" title="Phone">
-            <i data-feather="phone"></i>
-          </button>
-        </div>
-        <input type="text" id="contactValue" name="contact" required placeholder="กรอกช่องทางที่เลือก"
-               class="w-full p-3 border rounded-xl shadow-sm mt-3 hidden" />
-      </div>
-
-      <div>
-        <label class="block font-semibold text-indigo-700">หัวข้อปัญหา</label>
-        <select name="topic" required class="w-full p-3 border rounded-xl shadow-sm">
-          <option value="">-- เลือกหัวข้อ --</option>
-          <option value="เข้าสู่ระบบไม่ได้">เข้าสู่ระบบไม่ได้</option>
-          <option value="ขออนุมัติการเข้าถึงแอป">ขออนุมัติการเข้าถึงแอป</option>
-          <option value="ลืมรหัสผ่าน">ลืมรหัสผ่าน</option>
-          <option value="ใช้งาน Canva Pro ไม่ได้">ใช้งาน Canva Pro ไม่ได้</option>
-          <option value="อื่น ๆ">อื่น ๆ (โปรดระบุในช่องรายละเอียด)</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block font-semibold text-indigo-700">รายละเอียด</label>
-        <textarea name="details" rows="4" required class="w-full p-3 border rounded-xl shadow-sm"></textarea>
-      </div>
-
-      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold">
-        ส่งข้อมูล
-      </button>
-      <a href="pol.html"
-   class="flex items-center justify-center mt-2 w-full px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-800 rounded-xl font-semibold transition duration-300 hover:scale-105 shadow-md">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h4m4 0h4a2 2 0 002-2v-2m-6-4l-4-4m0 0l4-4m-4 4h12" />
-  </svg>
-  ตอบแบบประเมินความพึงพอใจ
-</a>
-
-    </form>
-  </div>
-
-  <script>
-    feather.replace();
-
-    const form = document.getElementById("issueForm");
-    const contactBtns = document.querySelectorAll(".contact-btn");
-    const contactInput = document.getElementById("contactValue");
-    let selectedType = "";
-
-    contactBtns.forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedType = btn.dataset.type;
-        contactBtns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        contactInput.style.display = "block";
-        contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
-        contactInput.focus();
-      });
-    });
-
-    const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQAF5fvtiU/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YUcLjm3AHIXiIi663L-hRF43OLvuCQuxla_bTzmg6bk";
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      if (!form.checkValidity() || !selectedType || !contactInput.value.trim()) {
-        form.reportValidity();
-        if (!selectedType || !contactInput.value.trim()) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ',
-          });
+    <!-- Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        function showContactField(type) {
+            // Hide all contact fields
+            document.getElementById('phoneField').classList.add('hidden');
+            document.getElementById('instagramField').classList.add('hidden');
+            document.getElementById('lineField').classList.add('hidden');
+            document.getElementById('facebookField').classList.add('hidden');
+            
+            // Clear all contact field values
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('instagramUsername').value = '';
+            document.getElementById('lineId').value = '';
+            document.getElementById('facebookName').value = '';
+            
+            // Show selected contact field
+            if (type === 'phone') {
+                document.getElementById('phoneField').classList.remove('hidden');
+            } else if (type === 'instagram') {
+                document.getElementById('instagramField').classList.remove('hidden');
+            } else if (type === 'line') {
+                document.getElementById('lineField').classList.remove('hidden');
+            } else if (type === 'facebook') {
+                document.getElementById('facebookField').classList.remove('hidden');
+            }
         }
-        return;
-      }
 
-      Swal.fire({
-        title: 'กำลังส่งข้อมูล...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-      });
-
-      const formData = new FormData(form);
-      formData.set("contact", `${selectedType}: ${contactInput.value}`);
-      const data = {};
-      formData.forEach((value, key) => data[key] = value);
-
-      const message = {
-        text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🆘กรุณาตอบกลับด้วยข้อความ เสร็จสิ้น`
-      };
-
-      try {
-        const res = await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(message),
-        });
-
-        if (res.ok) {
-          Swal.fire({
-            icon: 'success',
-            title: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
-            confirmButtonText: 'ตกลง'
-          });
-          form.reset();
-          contactInput.style.display = "none";
-          contactBtns.forEach(b => b.classList.remove("active"));
-        } else {
-          throw new Error();
+        function validateForm() {
+            const requiredFields = ['fullName', 'nickname', 'department', 'studentId', 'issueType', 'details'];
+            const missingFields = [];
+            
+            // Check required fields
+            for (let field of requiredFields) {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    missingFields.push(getFieldLabel(field));
+                }
+            }
+            
+            // Check contact method
+            const contactMethod = document.querySelector('input[name="contact"]:checked');
+            if (!contactMethod) {
+                missingFields.push('ช่องทางการติดต่อ');
+            } else {
+                // Check contact detail based on selected method
+                const contactValue = contactMethod.value;
+                let contactDetail = '';
+                
+                if (contactValue === 'โทรศัพท์') {
+                    contactDetail = document.getElementById('phoneNumber').value;
+                } else if (contactValue === 'อินสตาแกรม') {
+                    contactDetail = document.getElementById('instagramUsername').value;
+                } else if (contactValue === 'Line') {
+                    contactDetail = document.getElementById('lineId').value;
+                } else if (contactValue === 'Facebook') {
+                    contactDetail = document.getElementById('facebookName').value;
+                }
+                
+                if (!contactDetail.trim()) {
+                    missingFields.push('รายละเอียดการติดต่อ');
+                }
+            }
+            
+            // Check student ID format
+            const studentId = document.getElementById('studentId').value;
+            if (studentId && !/^[0-9]{5}$/.test(studentId)) {
+                alert('รหัสนักเรียนต้องเป็นตัวเลข 5 หลัก');
+                return false;
+            }
+            
+            if (missingFields.length > 0) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน:\n• ' + missingFields.join('\n• '));
+                return false;
+            }
+            
+            return true;
         }
-      } catch {
-        Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาดในการส่ง',
-          text: 'โปรดลองใหม่อีกครั้ง',
+        
+        function getFieldLabel(fieldId) {
+            const labels = {
+                'fullName': 'ชื่อ-สกุล',
+                'nickname': 'ชื่อเล่น',
+                'department': 'ฝ่าย',
+                'studentId': 'รหัสนักเรียน',
+                'issueType': 'หัวข้อปัญหา',
+                'details': 'รายละเอียดปัญหา'
+            };
+            return labels[fieldId] || fieldId;
+        }
+
+        document.getElementById('issueForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Show loading modal
+            document.getElementById('loadingModal').classList.remove('hidden');
+            document.getElementById('loadingModal').classList.add('flex');
+            
+            // Get contact detail
+            const contactMethod = document.querySelector('input[name="contact"]:checked').value;
+            let contactDetail = '';
+            
+            if (contactMethod === 'โทรศัพท์') {
+                contactDetail = document.getElementById('phoneNumber').value;
+            } else if (contactMethod === 'อินสตาแกรม') {
+                contactDetail = document.getElementById('instagramUsername').value;
+            } else if (contactMethod === 'Line') {
+                contactDetail = document.getElementById('lineId').value;
+            } else if (contactMethod === 'Facebook') {
+                contactDetail = document.getElementById('facebookName').value;
+            }
+            
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                nickname: document.getElementById('nickname').value,
+                department: document.getElementById('department').value,
+                generation: document.getElementById('generation').value || 'ไม่ระบุ',
+                studentId: document.getElementById('studentId').value,
+                contact: contactMethod,
+                contactDetail: contactDetail,
+                issueType: document.getElementById('issueType').value,
+                details: document.getElementById('details').value,
+                timestamp: new Date().toLocaleString('th-TH')
+            };
+            
+            // ส่งข้อมูลไป Google Apps Script
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycbzLxB7QARLVj3DFmY1oMDsyRfdcyP9WIFaUi62uEl6jpLbJpoUj12bpq7KUMvaMCOfdkg/exec';
+            
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(() => {
+                // Hide loading modal
+                document.getElementById('loadingModal').classList.add('hidden');
+                document.getElementById('loadingModal').classList.remove('flex');
+                
+                console.log('✅ ส่งข้อมูลไป Google Apps Script สำเร็จ:', formData);
+                
+                // Show success modal
+                document.getElementById('successModal').classList.remove('hidden');
+                document.getElementById('successModal').classList.add('flex');
+                
+                // Reset form
+                document.getElementById('issueForm').reset();
+                // Hide all contact fields
+                showContactField('');
+            })
+            .catch(error => {
+                // Hide loading modal
+                document.getElementById('loadingModal').classList.add('hidden');
+                document.getElementById('loadingModal').classList.remove('flex');
+                
+                console.error('❌ ข้อผิดพลาด:', error);
+                alert('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+            });
         });
-      }
-    });
-  </script>
-</body>
+        
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('flex');
+        }
+        
+        // Student ID input validation
+        document.getElementById('studentId').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97093d1e31ead030',t:'MTc1NTQzNDQxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
