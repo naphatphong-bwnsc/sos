@@ -23,7 +23,7 @@
     </div>
     <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">📣 แจ้งปัญหาการใช้งานระบบ @BWNSC</h2>
 
-    <form id="issueForm" class="space-y-4">
+    <form id="issueForm" class="space-y-4" novalidate>
       <div>
         <label class="block font-semibold text-indigo-700">ชื่อ-สกุล</label>
         <input type="text" name="fullname" required class="w-full p-3 border rounded-xl shadow-sm" />
@@ -56,10 +56,19 @@
           <label class="block font-semibold text-indigo-700">รุ่น</label>
           <input type="text" name="generation" required class="w-full p-3 border rounded-xl shadow-sm" />
         </div>
-      <div>
-        <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
-        <input type="text" name="studentId" pattern="^\d{5}$" maxlength="5" required
-               class="w-full p-3 border rounded-xl shadow-sm" />
+        <div>
+          <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
+          <input
+            type="text"
+            name="studentId"
+            pattern="^\d{5}$"
+            maxlength="5"
+            inputmode="numeric"
+            required
+            class="w-full p-3 border rounded-xl shadow-sm"
+            placeholder="กรอกรหัสนักเรียน 5 หลัก"
+          />
+        </div>
       </div>
 
       <div>
@@ -78,8 +87,14 @@
             <i data-feather="phone"></i>
           </button>
         </div>
-        <input type="text" id="contactValue" name="contact" required placeholder="กรอกช่องทางที่เลือก"
-               class="w-full p-3 border rounded-xl shadow-sm mt-3 hidden" />
+        <input
+          type="text"
+          id="contactValue"
+          name="contact"
+          required
+          placeholder="กรอกช่องทางที่เลือก"
+          class="w-full p-3 border rounded-xl shadow-sm mt-3 hidden"
+        />
       </div>
 
       <div>
@@ -99,109 +114,147 @@
         <textarea name="details" rows="4" required class="w-full p-3 border rounded-xl shadow-sm"></textarea>
       </div>
 
-      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold">
+      <button id="submitBtn" type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl shadow-md font-semibold">
         ส่งข้อมูล
       </button>
-      <a href="pol.html"
-   class="flex items-center justify-center mt-2 w-full px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-800 rounded-xl font-semibold transition duration-300 hover:scale-105 shadow-md">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h4m4 0h4a2 2 0 002-2v-2m-6-4l-4-4m0 0l4-4m-4 4h12" />
-  </svg>
-  ตอบแบบประเมินความพึงพอใจ
-</a>
 
+      <a href="pol.html"
+         class="flex items-center justify-center mt-2 w-full px-4 py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-800 rounded-xl font-semibold transition duration-300 hover:scale-105 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h4m4 0h4a2 2 0 002-2v-2m-6-4l-4-4m0 0l4-4m-4 4h12" />
+        </svg>
+        ตอบแบบประเมินความพึงพอใจ
+      </a>
     </form>
   </div>
-<script>
-  feather.replace();
 
-  const form = document.getElementById("issueForm");
-  const contactBtns = document.querySelectorAll(".contact-btn");
-  const contactInput = document.getElementById("contactValue");
-  let selectedType = "";
+  <script>
+    feather.replace();
 
-  contactBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      selectedType = btn.dataset.type;
-      contactBtns.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      contactInput.style.display = "block";
-      contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
-      contactInput.focus();
+    const form = document.getElementById("issueForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const contactBtns = document.querySelectorAll(".contact-btn");
+    const contactInput = document.getElementById("contactValue");
+    let selectedType = "";
+
+    // ตั้งค่าปุ่มเลือกช่องทางติดต่อ
+    contactBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedType = btn.dataset.type;
+        contactBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        contactInput.style.display = "block";
+        contactInput.placeholder = `กรอก${selectedType}ของคุณ`;
+        contactInput.focus();
+      });
     });
-  });
 
-  // 🔗 URL ของ Google Chat Webhook
-  const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAAAOvT7p_4/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=HFVoBODw7Vz7OzGPQcnm7S8afs48mrbMQ0rH-g1AYo0"; 
-  // 🔗 URL ของ Google Apps Script (Web App)
-  const sheetUrl = "https://script.google.com/macros/s/AKfycbzLxB7QARLVj3DFmY1oMDsyRfdcyP9WIFaUi62uEl6jpLbJpoUj12bpq7KUMvaMCOfdkg/exec"; 
+    // 🔗 URL ของ Google Chat Webhook (ตามที่คุณให้มา)
+    const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAAAOvT7p_4/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=HFVoBODw7Vz7OzGPQcnm7S8afs48mrbMQ0rH-g1AYo0";
+    // 🔗 URL ของ Google Apps Script (Web App) — ตามที่คุณให้มา
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbzLxB7QARLVj3DFmY1oMDsyRfdcyP9WIFaUi62uEl6jpLbJpoUj12bpq7KUMvaMCOfdkg/exec";
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    if (!form.checkValidity() || !selectedType || !contactInput.value.trim()) {
-      form.reportValidity();
+      // ตรวจช่องทางการติดต่อ
       if (!selectedType || !contactInput.value.trim()) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ',
-        });
+        form.reportValidity();
+        Swal.fire({ icon: 'warning', title: 'กรุณาเลือกและกรอกช่องทางการติดต่อ' });
+        return;
       }
-      return;
-    }
 
-    Swal.fire({
-      title: 'กำลังส่งข้อมูล...',
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading()
+      // ตรวจความถูกต้อง HTML5 (รวม pattern รหัสนักเรียน)
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // ป้องกันกดซ้ำ
+      submitBtn.disabled = true;
+
+      Swal.fire({
+        title: 'กำลังส่งข้อมูล...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      // เก็บข้อมูลจากฟอร์ม
+      const formData = new FormData(form);
+      formData.set("contact", `${selectedType}: ${contactInput.value}`);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
+
+      // เวลาไทย
+      const now = new Date().toLocaleString("th-TH");
+      data.timestamp = now;
+
+      // ข้อความสำหรับ Google Chat
+      const message = {
+        text:
+`📣 แจ้งปัญหาการใช้งานระบบ @BWNSC
+
+👤 ชื่อ-สกุล: ${data.fullname}
+🧸 ชื่อเล่น: ${data.nickname}
+🏢 ฝ่าย: ${data.department}
+🎓 รุ่น: ${data.generation}
+🆔 รหัสนักเรียน: ${data.studentId}
+📱 ช่องทางติดต่อ: ${data.contact}
+🧩 หัวข้อปัญหา: ${data.topic}
+📝 รายละเอียด: ${data.details}
+🕒 เวลาแจ้ง: ${now}
+🆘 กรุณาตอบกลับด้วยข้อความ "เสร็จสิ้น"`
+      };
+
+      try {
+        // 1) ส่งไป Google Chat
+        const chatRes = await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(message),
+        });
+
+        if (!chatRes.ok) {
+          throw new Error("ส่งข้อความไป Google Chat ไม่สำเร็จ");
+        }
+
+        // 2) ส่งไปบันทึกใน Google Sheets (Apps Script)
+        const sheetRes = await fetch(sheetUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        // คาดหวัง JSON: { result: "success", message: "..." }
+        const sheetJson = await sheetRes.json().catch(() => null);
+        if (!sheetRes.ok || !sheetJson || sheetJson.result !== "success") {
+          throw new Error(sheetJson?.message || "บันทึกลง Google Sheets ไม่สำเร็จ");
+        }
+
+        // สำเร็จ
+        Swal.fire({
+          icon: 'success',
+          title: 'บันทึกข้อมูลสำเร็จ',
+          text: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
+          confirmButtonText: 'ตกลง'
+        });
+
+        // รีเซ็ตฟอร์มและสถานะปุ่มช่องทาง
+        form.reset();
+        selectedType = "";
+        contactInput.style.display = "none";
+        contactBtns.forEach(b => b.classList.remove("active"));
+
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาดในการส่ง',
+          text: err.message || 'โปรดลองใหม่อีกครั้ง',
+        });
+      } finally {
+        submitBtn.disabled = false;
+      }
     });
-
-    const formData = new FormData(form);
-    formData.set("contact", `${selectedType}: ${contactInput.value}`);
-    const data = {};
-    formData.forEach((value, key) => data[key] = value);
-
-    // เพิ่มเวลาแจ้ง
-    const now = new Date().toLocaleString("th-TH");
-    data.timestamp = now;
-
-    // ข้อความส่งไป Google Chat
-    const message = {
-      text: `📣 แจ้งปัญหาการใช้งานระบบ @BWNSC\n\n👤 ชื่อ-สกุล: ${data.fullname}\n🧸 ชื่อเล่น: ${data.nickname}\n🏢 ฝ่าย: ${data.department}\n🎓 รุ่น: ${data.generation}\n🆔 รหัสนักเรียน: ${data.studentId}\n📱 ช่องทางติดต่อ: ${data.contact}\n🧩 หัวข้อปัญหา: ${data.topic}\n📝 รายละเอียด: ${data.details}\n🕒 เวลาแจ้ง: ${now}\n🆘 กรุณาตอบกลับด้วยข้อความ "เสร็จสิ้น"`
-    };
-
-    try {
-      // ส่งไป Google Chat
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message),
-      });
-
-      // ส่งไปบันทึกใน Google Sheets
-      await fetch(sheetUrl, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
-
-      Swal.fire({
-        icon: 'success',
-        title: 'บันทึกข้อมูลสำเร็จ',
-        text: 'กรุณารอรับการติดต่อจากผู้ดูแลระบบแต่ละรุ่น',
-        confirmButtonText: 'ตกลง'
-      });
-      form.reset();
-      contactInput.style.display = "none";
-      contactBtns.forEach(b => b.classList.remove("active"));
-    } catch (err) {
-      Swal.fire({
-        icon: 'error',
-        title: 'เกิดข้อผิดพลาดในการส่ง',
-        text: 'โปรดลองใหม่อีกครั้ง',
-      });
-    }
-  });
-</script>
+  </script>
 </body>
 </html>
