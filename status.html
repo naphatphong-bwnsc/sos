@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการข้อความ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <!-- Google Login Protection -->
+    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-4">
+            <div class="text-center mb-6">
+                <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-16 h-16 mx-auto mb-4 rounded-full">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">เข้าสู่ระบบ</h2>
+                <p class="text-gray-600 text-sm">กรุณาเข้าสู่ระบบด้วย Google Account</p>
+            </div>
+            
+            <!-- Google Sign-In Button -->
+            <div id="g_id_onload"
+                 data-client_id="568612861935-v4fb8pii5mtvibnfsebe1a5ob608eo0c.apps.googleusercontent.com"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            
+            <div class="g_id_signin w-full mb-4" 
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signin_with"
+                 data-size="large"
+                 data-logo_alignment="left"
+                 data-width="100%">
+            </div>
+            
+            <div class="text-center">
+                <p class="text-xs text-gray-500">สำหรับเจ้าหน้าที่สภานักเรียนเท่านั้น</p>
+            </div>
+            
+            <div id="loginError" class="hidden mt-3 p-3 bg-red-100 border border-red-300 rounded-lg text-red-700 text-sm text-center">
+                การเข้าสู่ระบบล้มเหลว กรุณาลองใหม่อีกครั้ง
+            </div>
+            
+            <div id="loginSuccess" class="hidden mt-3 p-3 bg-green-100 border border-green-300 rounded-lg text-green-700 text-sm text-center">
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+                    <span>กำลังเข้าสู่ระบบ...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mainContent" class="container mx-auto px-2 py-4 hidden">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
+            <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 px-2 text-center">ระบบจัดการข้อความแจ้งปัญหา</h1>
+            <p class="text-base sm:text-lg text-blue-600 font-semibold text-center">📋 สภานักเรียนโรงเรียนบุญวัฒนา</p>
+        </div>
+
+
+
+        <!-- Messages Cards -->
+        <div class="bg-white rounded-lg shadow-lg p-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">รายการข้อความ</h2>
+                <span id="messageCount" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">2 รายการ</span>
+            </div>
+            <div id="messagesContainer" class="space-y-4">
+                <!-- Sample Message Cards -->
+                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 text-lg">สมชาย ใจดี (ชาย)</h3>
+                            <p class="text-sm text-gray-600">รหัส: 38710 | ฝ่าย: วิชาการ | รุ่น: 65</p>
+                        </div>
+                        <span class="text-xs text-gray-500">15/01/2024 14:30</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p class="font-medium text-gray-700 mb-1">ปัญหาการเข้าระบบ</p>
+                        <p class="text-sm text-gray-600 mb-2">ไม่สามารถเข้าระบบได้</p>
+                        <p class="text-xs text-gray-500">📧 38710@bwnsc.in.th</p>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <select class="status-select px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 bg-yellow-100 text-yellow-800 font-medium" data-student-id="38710" data-email="38710@bwnsc.in.th" data-name="สมชาย ใจดี">
+                            <option value="รอดำเนินการ" selected>รอดำเนินการ</option>
+                            <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+                            <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+                        </select>
+                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium" onclick="toggleDetails(this)">
+                            ดูรายละเอียด ▼
+                        </button>
+                    </div>
+                    
+                    <div class="hidden mt-3 pt-3 border-t border-gray-300 text-sm text-gray-600 details-section">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><strong>ช่องทางติดต่อ:</strong> อีเมล</div>
+                            <div><strong>รายละเอียดการติดต่อ:</strong> 38710@bwnsc.in.th</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 text-lg">สมหญิง รักเรียน (หญิง)</h3>
+                            <p class="text-sm text-gray-600">รหัส: 64025 | ฝ่าย: กิจกรรม | รุ่น: 64</p>
+                        </div>
+                        <span class="text-xs text-gray-500">15/01/2024 16:45</span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p class="font-medium text-gray-700 mb-1">สอบถามกิจกรรม</p>
+                        <p class="text-sm text-gray-600 mb-2">ต้องการทราบรายละเอียดกิจกรรม</p>
+                        <p class="text-xs text-gray-500">📱 081-234-5678</p>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <select class="status-select px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 bg-blue-100 text-blue-800 font-medium" data-student-id="64025" data-email="somying@email.com" data-name="สมหญิง รักเรียน">
+                            <option value="รอดำเนินการ">รอดำเนินการ</option>
+                            <option value="กำลังดำเนินการ" selected>กำลังดำเนินการ</option>
+                            <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+                        </select>
+                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium" onclick="toggleDetails(this)">
+                            ดูรายละเอียด ▼
+                        </button>
+                    </div>
+                    
+                    <div class="hidden mt-3 pt-3 border-t border-gray-300 text-sm text-gray-600 details-section">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><strong>ช่องทางติดต่อ:</strong> โทรศัพท์</div>
+                            <div><strong>รายละเอียดการติดต่อ:</strong> 081-234-5678</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <footer class="py-6 sm:py-8 border-t border-gray-200 mt-8 sm:mt-12">
+            <div class="text-center px-4">
+                <div class="flex items-center justify-center mb-4">
+                    <img src="https://data.bwnsc.in.th/sc.png" alt="BWNSC Logo" class="w-6 h-6 sm:w-8 sm:h-8 rounded mr-2">
+                    <span class="text-gray-800 font-medium text-sm sm:text-base">สภานักเรียนโรงเรียนบุญวัฒนา</span>
+                </div>
+                <div class="flex justify-center space-x-6 mb-4">
+                    <a href="https://www.facebook.com/CouncilBoon" class="text-gray-600 hover:text-blue-600 transition-colors text-lg">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/bwnsc_official/?hl=th" class="text-gray-600 hover:text-pink-600 transition-colors text-lg">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="mailto:scbwn@boon.ac.th" class="text-gray-600 hover:text-blue-600 transition-colors text-lg">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="https://www.bwnsc.in.th" class="text-gray-600 hover:text-blue-600 transition-colors text-lg">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-xs sm:text-sm">© 2025 สภานักเรียนโรงเรียนบุญวัฒนา - สงวนลิขสิทธิ์</p>
+                <p class="text-gray-500 text-xs sm:text-sm mt-1">
+                    Developed by <span class="font-medium text-gray-700">FNPHAT</span>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="emailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg p-4 w-full max-w-sm">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">ส่งอีเมลแจ้งเตือน</h3>
+            <div id="emailContent" class="mb-4 p-3 bg-gray-50 rounded-lg text-sm">
+                <!-- Email content will be inserted here -->
+            </div>
+            <div class="flex space-x-3">
+                <button id="cancelEmail" class="flex-1 py-3 px-4 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg font-medium transition-colors">ยกเลิก</button>
+                <button id="sendEmail" class="flex-1 py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">ส่งอีเมล</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messages = [];
+        let emailLog = [];
+
+        // Authorized email domains/addresses
+        const authorizedEmails = [
+            'admin@bwnsc.in.th',
+            'scbwn@boon.ac.th',
+            'president@bwnsc.in.th',
+            'vicepresident@bwnsc.in.th',
+            'secretary@bwnsc.in.th',
+            // Add more authorized emails here
+        ];
+
+        // Google Sign-In callback function
+        function handleCredentialResponse(response) {
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
+            
+            try {
+                // Decode JWT token to get user info
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                const userEmail = payload.email;
+                const userName = payload.name;
+                
+                // Check if user is authorized
+                if (authorizedEmails.includes(userEmail) || userEmail.endsWith('@bwnsc.in.th')) {
+                    // Show loading state
+                    successDiv.classList.remove('hidden');
+                    errorDiv.classList.add('hidden');
+                    
+                    // Successful login
+                    setTimeout(() => {
+                        document.getElementById('loginScreen').classList.add('hidden');
+                        document.getElementById('mainContent').classList.remove('hidden');
+                        
+                        // Show welcome message
+                        setTimeout(() => {
+                            alert(`เข้าสู่ระบบสำเร็จ!\nยินดีต้อนรับ ${userName}\n${userEmail}`);
+                        }, 500);
+                    }, 1500);
+                } else {
+                    // Unauthorized user
+                    errorDiv.textContent = 'คุณไม่มีสิทธิ์เข้าใช้งานระบบนี้ กรุณาติดต่อผู้ดูแลระบบ';
+                    errorDiv.classList.remove('hidden');
+                    successDiv.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error processing Google Sign-In:', error);
+                errorDiv.textContent = 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง';
+                errorDiv.classList.remove('hidden');
+                successDiv.classList.add('hidden');
+            }
+        }
+
+        // Make function globally available
+        window.handleCredentialResponse = handleCredentialResponse;
+
+        // Initialize status colors
+        function updateStatusColors() {
+            document.querySelectorAll('.status-select').forEach(select => {
+                const value = select.value;
+                select.className = 'status-select px-3 py-1 text-sm rounded-full border-0 focus:ring-2 focus:ring-blue-500 ';
+                
+                if (value === 'รอดำเนินการ') {
+                    select.className += 'bg-yellow-100 text-yellow-800';
+                } else if (value === 'กำลังดำเนินการ') {
+                    select.className += 'bg-blue-100 text-blue-800';
+                } else if (value === 'เสร็จสิ้น') {
+                    select.className += 'bg-green-100 text-green-800';
+                }
+            });
+        }
+
+
+
+        // Toggle details function
+        function toggleDetails(button) {
+            const card = button.closest('.border');
+            const details = card.querySelector('.details-section');
+            const isHidden = details.classList.contains('hidden');
+            
+            if (isHidden) {
+                details.classList.remove('hidden');
+                button.textContent = 'ซ่อนรายละเอียด ▲';
+            } else {
+                details.classList.add('hidden');
+                button.textContent = 'ดูรายละเอียด ▼';
+            }
+        }
+
+
+
+
+
+        function attachStatusChangeListener(select) {
+            select.addEventListener('change', function() {
+                const previousValue = this.getAttribute('data-previous-value') || 'รอดำเนินการ';
+                const newValue = this.value;
+                const studentId = this.getAttribute('data-student-id');
+                const email = this.getAttribute('data-email');
+                const name = this.getAttribute('data-name');
+
+                // Update colors
+                updateStatusColors();
+
+                // Check if status changed from "รอดำเนินการ" to "เสร็จสิ้น"
+                if (previousValue === 'รอดำเนินการ' && newValue === 'เสร็จสิ้น') {
+                    showEmailModal(studentId, email, name);
+                }
+
+                this.setAttribute('data-previous-value', newValue);
+            });
+
+            // Set initial previous value
+            select.setAttribute('data-previous-value', select.value);
+        }
+
+        function showEmailModal(studentId, email, name) {
+            const modal = document.getElementById('emailModal');
+            const content = document.getElementById('emailContent');
+            
+            content.innerHTML = `
+                <div class="text-sm">
+                    <p><strong>ถึง:</strong> ${email}</p>
+                    <p><strong>ชื่อ:</strong> ${name}</p>
+                    <p><strong>รหัสนักเรียน:</strong> ${studentId}</p>
+                    <hr class="my-3">
+                    <p><strong>หัวข้อ:</strong> แจ้งเตือนสถานะข้อความ - เสร็จสิ้น</p>
+                    <p><strong>เนื้อหา:</strong></p>
+                    <div class="bg-white p-3 rounded border mt-2">
+                        เรียน ${name}<br><br>
+                        ขอแจ้งให้ทราบว่าข้อความของท่าน (รหัสนักเรียน: ${studentId}) ได้รับการดำเนินการเสร็จสิ้นแล้ว<br><br>
+                        เพื่อพัฒนาระบบให้ดียิ่งขึ้น กรุณาตอบแบบสอบถามการใช้งานระบบแจ้งปัญหาการใช้งานระบบ @BWNSC ผ่านลิงก์ด้านล่าง:<br>
+                        <a href="https://forms.gle/survey-link" class="text-blue-600 underline">แบบสอบถามความพึงพอใจ</a><br><br>
+                        ขอบคุณที่ใช้บริการ<br>
+                        สภานักเรียนโรงเรียนบุญวัฒนา
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // Store data for sending
+            modal.setAttribute('data-student-id', studentId);
+            modal.setAttribute('data-email', email);
+            modal.setAttribute('data-name', name);
+        }
+
+        // Modal event listeners
+        document.getElementById('cancelEmail').addEventListener('click', function() {
+            document.getElementById('emailModal').classList.add('hidden');
+            document.getElementById('emailModal').classList.remove('flex');
+        });
+
+        document.getElementById('sendEmail').addEventListener('click', function() {
+            const modal = document.getElementById('emailModal');
+            const email = modal.getAttribute('data-email');
+            
+            // Close modal
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            
+            // Show success message
+            alert(`ส่งอีเมลแจ้งเตือนไปยัง ${email} เรียบร้อยแล้ว`);
+        });
+
+
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatusColors();
+            
+            // Attach listeners to existing selects
+            document.querySelectorAll('.status-select').forEach(select => {
+                attachStatusChangeListener(select);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97096573741d2705',t:'MTc1NTQzNjA2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
