@@ -56,10 +56,10 @@
           <label class="block font-semibold text-indigo-700">รุ่น</label>
           <input type="text" name="generation" required class="w-full p-3 border rounded-xl shadow-sm" />
         </div>
-        <div>
-          <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
-          <input type="text" name="studentId" pattern="\d{5}" maxlength="5" required class="w-full p-3 border rounded-xl shadow-sm" />
-        </div>
+      <div>
+        <label class="block font-semibold text-indigo-700">รหัสนักเรียน</label>
+        <input type="text" name="studentId" pattern="^\d{5}$" maxlength="5" required
+               class="w-full p-3 border rounded-xl shadow-sm" />
       </div>
 
       <div>
