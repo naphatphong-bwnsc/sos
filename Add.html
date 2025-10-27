@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>สร้างหน้าธรรมเนียบคณะกรรมการนักเรียน</title>
   <style>
-    :root{
+    :root {
       --bg:#f6fbff;
       --card:#ffffff;
       --accent:#0366d6;
       --muted:#6b7280;
       --border:#e6eefc;
-      font-family: "Mitr", "Noto Sans Thai", Arial, sans-serif;
+      font-family:"Mitr","Noto Sans Thai",Arial,sans-serif;
     }
     body{background:var(--bg);margin:0;padding:20px;color:#0b1720;}
     .container{max-width:980px;margin:0 auto;}
@@ -19,7 +19,7 @@
     h1{margin:0 0 8px 0;font-size:20px;color:var(--accent);}
     p.lead{margin:0 0 16px 0;color:var(--muted);}
     label{display:block;margin:12px 0 6px 0;font-weight:600;}
-    input[type="text"], textarea{width:100%;padding:10px;border:1px solid #d7e7ff;border-radius:8px;font-size:15px;box-sizing:border-box}
+    input[type="text"],textarea{width:100%;padding:10px;border:1px solid #d7e7ff;border-radius:8px;font-size:15px;box-sizing:border-box}
     textarea{min-height:160px;resize:vertical}
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .col{flex:1 1 220px}
@@ -40,20 +40,20 @@
   <div class="container">
     <div class="card">
       <h1>สร้างหน้าธรรมเนียบคณะกรรมการนักเรียน</h1>
-      <p class="lead">กรอกโค้ด/URL ของ pubhtml5 และรายการชื่อ-นามสกุล ตำแหน่ง (1 คน ต่อ 1 บรรทัด) ตัวอย่าง: <span class="small">นายธนกร บุญศรี ประธานนักเรียน</span></p>
+      <p class="lead">กรอกโค้ด/URL ของ pubhtml5 และรายการชื่อ-นามสกุล ตำแหน่ง (1 คน ต่อ 1 บรรทัด)</p>
 
       <label for="pub">1) โค้ดหรือ URL ของ pubhtml5</label>
-      <input id="pub" type="text" placeholder="วางโค้ด เช่น abc123 หรือ URL เช่น https://pubhtml5.com/abc123" />
+      <input id="pub" type="text" placeholder="เช่น abc123 หรือ https://pubhtml5.com/abc123" />
 
-      <label for="list">2) รายชื่อ (1 คน = 1 บรรทัด) — รูปแบบ: ชื่อ[space]นามสกุล[space]ตำแหน่ง</label>
-      <textarea id="list" placeholder="ตัวอย่าง:
+      <label for="list">2) รายชื่อ (1 คน = 1 บรรทัด)</label>
+      <textarea id="list" placeholder="เช่น
 นายธนกร บุญศรี ประธานนักเรียน
 นางสาวชลธิชา แก้วใจ รองประธาน"></textarea>
 
       <div class="controls">
-        <button onclick="generate()">สร้างโค้ดและตาราง</button>
-        <button class="secondary" onclick="clearAll()">ล้างข้อมูล</button>
-        <div style="margin-left:auto" class="small">เมื่อสร้างแล้วสามารถคัดลอก <strong>HTML</strong> แล้วไปวางใน Blogger (HTML gadget หรือโพสต์แบบ HTML)</div>
+        <button onclick="window.generate()">สร้างโค้ดและตาราง</button>
+        <button class="secondary" onclick="window.clearAll()">ล้างข้อมูล</button>
+        <div style="margin-left:auto" class="small">คัดลอก HTML ที่ได้ไปวางใน Blogger (โหมด HTML)</div>
       </div>
 
       <div class="output" id="output" aria-live="polite"></div>
@@ -64,216 +64,125 @@
 function detectPubUrl(input){
   if(!input) return null;
   input = input.trim();
-  // ถ้าเป็น URL เต็ม ๆ ให้ใช้ตรง ๆ
-  try {
+  try{
     const u = new URL(input);
-    // ถ้าเป็น pubhtml5 domain -> return
     if(u.hostname.includes("pubhtml5.com")) return u.href;
-    // ถ้าเป็นลิงก์อื่น ให้คืนค่า input (ผู้ใช้อาจจะวางลิงก์ฝังจากที่อื่น)
     return u.href;
-  } catch(e){
-    // ไม่ใช่ URL -> ถือเป็นรหัส ให้ประกอบเป็น https://pubhtml5.com/รหัส
-    // ถ้ผู้ใช้ใส่ "pub-" หรือ "pubhtml5-" ก็ใส่ตรง ๆ
-    const code = input;
-    return "https://pubhtml5.com/" + encodeURIComponent(code);
+  }catch(e){
+    return "https://pubhtml5.com/" + encodeURIComponent(input);
   }
 }
 
 function parseNames(text){
   const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length);
   const rows = [];
-  lines.forEach((ln, idx) => {
-    // แยกโดยช่องว่างตัวสุดท้าย: ข้างหน้าคือชื่อ-นามสกุล, ข้างหลังเป็นตำแหน่ง
+  lines.forEach(ln=>{
     const lastSpace = ln.lastIndexOf(' ');
-    if(lastSpace <= 0){
-      // ถ้าไม่มีช่องว่าง ให้ใช้ทั้งบรรทัดเป็นชื่อ และตำแหน่งว่าง
-      rows.push({name: ln, position: ""});
-    } else {
-      const name = ln.substring(0,lastSpace).trim();
-      const position = ln.substring(lastSpace+1).trim();
-      rows.push({name, position});
-    }
+    if(lastSpace<=0) rows.push({name:ln,position:""});
+    else rows.push({name:ln.substring(0,lastSpace).trim(),position:ln.substring(lastSpace+1).trim()});
   });
   return rows;
 }
 
 function buildTableHTML(rows){
-  const header = '<table class="bwn-table" border="0" cellpadding="0" cellspacing="0"><thead><tr><th>ลำดับ</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th></tr></thead><tbody>';
-  const footer = '</tbody></table>';
-  const body = rows.map((r,i)=>\`<tr><td>\${i+1}</td><td>\${escapeHtml(r.name)}</td><td>\${escapeHtml(r.position)}</td></tr>\`).join('');
-  return header + body + footer;
+  const header='<table class="bwn-table" border="0" cellpadding="0" cellspacing="0"><thead><tr><th>ลำดับ</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th></tr></thead><tbody>';
+  const body=rows.map((r,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(r.name)}</td><td>${escapeHtml(r.position)}</td></tr>`).join('');
+  return header+body+'</tbody></table>';
 }
 
-function buildEmbedHTML(pubUrl, rows){
-  // สร้าง snippet ที่จะให้ผู้ใช้คัดลอกไปฝังใน Blogger
-  // ใส่ iframe ของ pubhtml5 และตารางรายชื่อ
-  const iframe = '<div class="pubhtml5-embed" style="max-width:100%;margin-bottom:12px;"><iframe src="'+escapeHtml(pubUrl)+'" style="width:100%;height:600px;border:0;" allowfullscreen></iframe></div>';
-  const table = buildTableHTML(rows);
-  const style = '<style> .bwn-table{width:100%;border-collapse:collapse;font-family:inherit} .bwn-table th{background:#f8fbff;padding:8px;text-align:left;border-bottom:1px solid #eaf3ff} .bwn-table td{padding:8px;border-bottom:1px solid #f1f8ff} </style>';
-  const wrapper = '<div class="pubhtml5-section">'+style+iframe+table+'</div>';
-  return wrapper;
+function buildEmbedHTML(pubUrl,rows){
+  const iframe=`<div class="pubhtml5-embed" style="max-width:100%;margin-bottom:12px;"><iframe src="${escapeHtml(pubUrl)}" style="width:100%;height:600px;border:0;" allowfullscreen></iframe></div>`;
+  const table=buildTableHTML(rows);
+  const style='<style>.bwn-table{width:100%;border-collapse:collapse;font-family:inherit}.bwn-table th{background:#f8fbff;padding:8px;text-align:left;border-bottom:1px solid #eaf3ff}.bwn-table td{padding:8px;border-bottom:1px solid #f1f8ff}</style>';
+  return `<div class="pubhtml5-section">${style}${iframe}${table}</div>`;
 }
 
 function escapeHtml(s){
-  if(s == null) return "";
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||"").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function generate(){
-  const pubRaw = document.getElementById('pub').value.trim();
-  const listRaw = document.getElementById('list').value;
-  const out = document.getElementById('output');
-  out.innerHTML = '';
+window.generate=function(){
+  const pubRaw=document.getElementById('pub').value.trim();
+  const listRaw=document.getElementById('list').value;
+  const out=document.getElementById('output');
+  out.innerHTML='';
+  if(!pubRaw){out.innerHTML='<div class="card" style="margin-top:12px;background:#fff6f6;color:#8a1f1f;padding:12px;border-radius:8px">⚠️ กรุณากรอกโค้ดหรือ URL ของ pubhtml5</div>';return;}
+  if(!listRaw.trim()){out.innerHTML='<div class="card" style="margin-top:12px;background:#fff6f6;color:#8a1f1f;padding:12px;border-radius:8px">⚠️ กรุณากรอกรายชื่ออย่างน้อย 1 คน</div>';return;}
 
-  if(!pubRaw){
-    out.innerHTML = '<div class="card" style="margin-top:12px;padding:12px;border:1px solid #ffd6d6;background:#fff6f6;color:#8a1f1f;border-radius:8px">กรุณากรอกโค้ดหรือ URL ของ pubhtml5 ก่อน</div>';
-    return;
-  }
-  if(!listRaw || !listRaw.trim()){
-    out.innerHTML = '<div class="card" style="margin-top:12px;padding:12px;border:1px solid #ffd6d6;background:#fff6f6;color:#8a1f1f;border-radius:8px">กรุณากรอกรายชื่ออย่างน้อย 1 คน</div>';
-    return;
-  }
+  const pubUrl=detectPubUrl(pubRaw);
+  const rows=parseNames(listRaw);
 
-  const pubUrl = detectPubUrl(pubRaw);
-  const rows = parseNames(listRaw);
+  const previewWrap=document.createElement('div');
+  previewWrap.className='card';
+  previewWrap.style.marginTop='12px';
+  previewWrap.innerHTML=`<strong>ลิงก์ pubhtml5:</strong><div class="linkline" style="margin-top:8px"><a href="${escapeHtml(pubUrl)}" target="_blank">${escapeHtml(pubUrl)}</a></div>`+buildTableHTML(rows);
 
-  // สร้าง preview
-  const previewWrap = document.createElement('div');
-  previewWrap.className = 'card';
-  previewWrap.style.marginTop = '12px';
-  previewWrap.innerHTML = '<strong>ลิงก์ pubhtml5:</strong><div class="linkline" style="margin-top:8px"><a href="'+escapeHtml(pubUrl)+'" target="_blank" rel="noopener noreferrer">'+escapeHtml(pubUrl)+'</a></div>';
+  const embedHtml=buildEmbedHTML(pubUrl,rows);
+  const codeBox=document.createElement('div');
+  codeBox.className='codebox';
+  codeBox.id='codeForCopy';
+  codeBox.textContent=embedHtml;
 
-  // ตารางตัวอย่าง
-  const tableHtml = buildTableHTML(rows);
-  const previewBox = document.createElement('div');
-  previewBox.className = 'preview';
-  previewBox.style.padding = '12px';
-  previewBox.innerHTML = tableHtml;
-  previewWrap.appendChild(previewBox);
+  const btnWrap=document.createElement('div');
+  btnWrap.className='controls';
+  btnWrap.style.marginTop='12px';
+  btnWrap.innerHTML='<button onclick="window.copyEmbedRaw()">คัดลอกโค้ด HTML</button><button class="secondary" onclick="window.copyPreviewHTML()">คัดลอกตารางเท่านั้น</button><button class="secondary" onclick="window.downloadHtml()">ดาวน์โหลด .html</button>';
 
-  // สร้างโค้ด HTML สำหรับฝัง
-  const embedHtml = buildEmbedHTML(pubUrl, rows);
-  const codeBox = document.createElement('div');
-  codeBox.style.marginTop = '12px';
-  codeBox.innerHTML = '<label><strong>โค้ด HTML สำหรับฝังใน Blogger (คลิกคัดลอก)</strong></label><div class="codebox" id="codeForCopy">'+escapeHtml(embedHtml)+'</div>';
-
-  // ปุ่มคัดลอกโค้ด (คัดลอกโค้ดแบบ raw — ไม่เอา &lt; escaped &gt; )
-  const btnWrap = document.createElement('div');
-  btnWrap.style.marginTop = '10px';
-  btnWrap.innerHTML = '<button onclick="copyEmbedRaw()">คัดลอกโค้ด HTML (สำหรับวางใน Blogger)</button> <button class="secondary" onclick="copyPreviewHTML()">&nbsp;คัดลอกตารางเท่านั้น&nbsp;</button> <button class="secondary" onclick="downloadHtml()">ดาวน์โหลดเป็นไฟล์ .html</button> <div class="small" style="margin-top:8px">หมายเหตุ: ถ้าต้องการฝังในโพสต์ Blogger ให้เปลี่ยนเป็นโหมด HTML แล้ววางโค้ดนี้</div>';
-
-  // แสดงตัวอย่าง iframe แบบฝัง (live preview)
-  const livePreview = document.createElement('div');
-  livePreview.style.marginTop = '12px';
-  livePreview.innerHTML = '<label><strong>ตัวอย่าง (Preview)</strong></label><div class="preview" style="padding:12px">'+escapeHtml('(iframe preview)')+'</div>';
-
-  // แทรกออกมาทั้งหมด
   out.appendChild(previewWrap);
   out.appendChild(codeBox);
   out.appendChild(btnWrap);
 
-  // สร้าง hidden element เก็บ raw embedHtml ไว้ใช้ตอนคัดลอก
-  let hidden = document.getElementById('__raw_embed_html');
-  if(!hidden){
-    hidden = document.createElement('textarea');
-    hidden.id = '__raw_embed_html';
-    hidden.style.display = 'none';
-    document.body.appendChild(hidden);
-  }
-  hidden.value = embedHtml;
+  document.getElementById('__raw_embed_html')?.remove();
+  const hidden=document.createElement('textarea');
+  hidden.id='__raw_embed_html';
+  hidden.style.display='none';
+  hidden.value=embedHtml;
+  document.body.appendChild(hidden);
 
-  // สร้าง hidden table-only raw
-  let hiddenTable = document.getElementById('__raw_table_html');
-  if(!hiddenTable){
-    hiddenTable = document.createElement('textarea');
-    hiddenTable.id = '__raw_table_html';
-    hiddenTable.style.display = 'none';
-    document.body.appendChild(hiddenTable);
-  }
-  hiddenTable.value = buildTableHTML(rows);
+  document.getElementById('__raw_table_html')?.remove();
+  const hiddenT=document.createElement('textarea');
+  hiddenT.id='__raw_table_html';
+  hiddenT.style.display='none';
+  hiddenT.value=buildTableHTML(rows);
+  document.body.appendChild(hiddenT);
 }
 
 function copyToClipboard(text){
-  if(!navigator.clipboard){
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      return true;
-    } catch(e){
-      document.body.removeChild(ta);
-      return false;
-    }
-  } else {
-    return navigator.clipboard.writeText(text).then(()=>true).catch(()=>false);
-  }
+  if(navigator.clipboard) return navigator.clipboard.writeText(text);
+  const ta=document.createElement('textarea');
+  ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
 }
 
-function copyEmbedRaw(){
-  const raw = document.getElementById('__raw_embed_html');
-  if(!raw){
-    alert('ยังไม่มีโค้ดให้คัดลอก — โปรดกด "สร้างโค้ดและตาราง" ก่อน');
-    return;
-  }
-  const ok = copyToClipboard(raw.value);
-  if(ok) {
-    alert('คัดลอกโค้ด HTML สำเร็จ — วางใน Blogger (โหมด HTML) ได้เลย');
-  } else {
-    alert('คัดลอกไม่สำเร็จ ลองคลิกขวาแล้วคัดลอกด้วยตนเอง');
-  }
+window.copyEmbedRaw=function(){
+  const el=document.getElementById('__raw_embed_html');
+  if(!el){alert('ยังไม่มีโค้ดให้คัดลอก');return;}
+  copyToClipboard(el.value);alert('✅ คัดลอกโค้ด HTML สำเร็จ');
 }
 
-function copyPreviewHTML(){
-  const raw = document.getElementById('__raw_table_html');
-  if(!raw){
-    alert('ยังไม่มีตารางให้คัดลอก — โปรดกด "สร้างโค้ดและตาราง" ก่อน');
-    return;
-  }
-  const ok = copyToClipboard(raw.value);
-  if(ok) {
-    alert('คัดลอกตาราง HTML สำเร็จ — วางใน Blogger (โหมด HTML) ได้เลย');
-  } else {
-    alert('คัดลอกไม่สำเร็จ ลองคลิกขวาแล้วคัดลอกด้วยตนเอง');
-  }
+window.copyPreviewHTML=function(){
+  const el=document.getElementById('__raw_table_html');
+  if(!el){alert('ยังไม่มีตารางให้คัดลอก');return;}
+  copyToClipboard(el.value);alert('✅ คัดลอกตารางสำเร็จ');
 }
 
-function clearAll(){
-  if(!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')) return;
-  document.getElementById('pub').value = '';
-  document.getElementById('list').value = '';
-  document.getElementById('output').innerHTML = '';
-  const r = document.getElementById('__raw_embed_html');
-  if(r) r.value = '';
-  const t = document.getElementById('__raw_table_html');
-  if(t) t.value = '';
+window.clearAll=function(){
+  if(!confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?'))return;
+  document.getElementById('pub').value='';
+  document.getElementById('list').value='';
+  document.getElementById('output').innerHTML='';
 }
 
-function downloadHtml(){
-  const raw = document.getElementById('__raw_embed_html');
-  if(!raw || !raw.value){
-    alert('ยังไม่มีโค้ดให้ดาวน์โหลด — โปรดกด "สร้างโค้ดและตาราง" ก่อน');
-    return;
-  }
-  const full = '<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>pubhtml5 + รายชื่อ</title></head><body>'+raw.value+'</body></html>';
-  const blob = new Blob([full], {type:'text/html'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'pubhtml5_with_list.html';
-  document.body.appendChild(a);
+window.downloadHtml=function(){
+  const el=document.getElementById('__raw_embed_html');
+  if(!el||!el.value){alert('ยังไม่มีโค้ดให้ดาวน์โหลด');return;}
+  const full='<!doctype html><html lang="th"><meta charset="utf-8"><body>'+el.value+'</body></html>';
+  const blob=new Blob([full],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='pubhtml5_with_list.html';
   a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(a.href);
 }
-
-// Escape HTML for preview display in codebox
-(function init(){
-  // nothing for now
-})();
 </script>
 </body>
 </html>
